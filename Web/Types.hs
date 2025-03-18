@@ -7,7 +7,7 @@ import Generated.Types
 data WebApplication = WebApplication deriving (Eq, Show)
 
 
-data StaticController = WelcomeAction deriving (Eq, Show, Data)
+data SessionsController = SessionsAction deriving (Eq, Show, Data)
 
 data JinglesController
     = JinglesAction
@@ -17,4 +17,14 @@ data JinglesController
     | EditJingleAction { jingleId :: !(Id Jingle) }
     | UpdateJingleAction { jingleId :: !(Id Jingle) }
     | DeleteJingleAction { jingleId :: !(Id Jingle) }
+    deriving (Eq, Show, Data)
+
+data UsersController
+    = UsersAction
+    | NewUserAction
+    | ShowUserAction { userId :: !(Id User) }
+    | CreateUserAction
+    | EditUserAction { userId :: !(Id User) }
+    | UpdateUserAction { userId :: !(Id User) }
+    | DeleteUserAction { userId :: !(Id User) }
     deriving (Eq, Show, Data)

@@ -9,3 +9,10 @@ CREATE TABLE jingles (
     banda_original TEXT DEFAULT NULL,
     creado_por TEXT DEFAULT NULL
 );
+CREATE TABLE users (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    locked_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+    failed_login_attempts INT DEFAULT 0 NOT NULL
+);
