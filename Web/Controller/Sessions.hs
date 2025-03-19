@@ -1,10 +1,11 @@
 module Web.Controller.Sessions where
 import Web.Controller.Prelude
 import Web.View.Sessions.New
+import qualified IHP.AuthSupport.Controller.Sessions as Sessions
 
 instance Controller SessionsController where
-    -- action SessionsAction = render NewView
+    action NewSessionAction = Sessions.newSessionAction @User
+    action CreateSessionAction = Sessions.createSessionAction @User
+    action DeleteSessionAction = Sessions.deleteSessionAction @User
 
-    action SessionsAction = do
-        let user = newRecord
-        render NewView { .. }
+instance Sessions.SessionsControllerConfig User

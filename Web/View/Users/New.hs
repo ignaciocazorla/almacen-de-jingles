@@ -17,9 +17,10 @@ instance View NewView where
 
 renderForm :: User -> Html
 renderForm user = formFor user [hsx|
-    {(emailField #email)}
-    {(passwordField #passwordHash) {fieldLabel = "Contraseña"}}
-    {(passwordField #passwordHash) {fieldLabel = "Repetir contraseña"}}
-    {submitButton {label = "Crear Usuario"}}
+    {(textField #email)}
+    {(passwordField #passwordHash) {fieldLabel = "Contraseña", required = True}}
 
+    {(passwordField #passwordHash) { required = True, fieldLabel = "Confirmar contraseña", fieldName = "passwordConfirmation", validatorResult = Nothing }}
+
+    {submitButton {label = "Crear Usuario"}}
 |]

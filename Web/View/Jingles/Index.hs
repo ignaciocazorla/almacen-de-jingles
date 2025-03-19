@@ -7,6 +7,9 @@ instance View IndexView where
     html IndexView { .. } = [hsx|
         {breadcrumb}
 
+        {- Deberia moverse a un panel comun a todas las vistas -}
+        <a class="js-delete js-delete-no-confirm" href={DeleteSessionAction}>Logout</a>
+
         <h1>Listado de Jingles<a href={pathTo NewJingleAction} class="btn btn-primary ms-4">+ Nuevo</a></h1>
         <div class="table-responsive">
             <table class="table">
