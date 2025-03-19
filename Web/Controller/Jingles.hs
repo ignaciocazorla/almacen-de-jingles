@@ -7,6 +7,8 @@ import Web.View.Jingles.Edit
 import Web.View.Jingles.Show
 
 instance Controller JinglesController where
+    beforeAction = ensureIsUser
+
     action JinglesAction = do
         jingles <- query @Jingle |> fetch
         render IndexView { .. }
