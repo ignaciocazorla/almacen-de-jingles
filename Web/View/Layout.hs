@@ -1,4 +1,4 @@
-module Web.View.Layout (defaultLayout, Html) where
+module Web.View.Layout (defaultLayout, notLoggedInLayout, Html) where
 
 import IHP.ViewPrelude
 import IHP.Environment
@@ -21,12 +21,41 @@ defaultLayout inner = [hsx|
         <title>{pageTitleOrDefault "App"}</title>
     </head>
     <body>
+        {navbar}
         <div class="container mt-4">
             {renderFlashMessages}
             {inner}
         </div>
     </body>
 </html>
+|]
+
+notLoggedInLayout :: Html -> Html
+notLoggedInLayout inner = [hsx|
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {metaTags}
+
+        {stylesheets}
+        {scripts}
+
+        <title>{pageTitleOrDefault "App"}</title>
+    </head>
+    <body>
+        <div class="container mt-4">
+            {renderFlashMessages}
+            {inner}
+        </div>
+    </body>
+</html>
+|]
+
+navbar :: Html
+navbar = [hsx|
+    <nav class="d-flex">
+        <h3>Hola {currentUser.email} <a class="js-delete js-delete-no-confirm btn btn-primary ms-4" href={DeleteSessionAction}>Logout</a> </h3>
+    </nav>
 |]
 
 -- The 'assetPath' function used below appends a `?v=SOME_VERSION` to the static assets in production
