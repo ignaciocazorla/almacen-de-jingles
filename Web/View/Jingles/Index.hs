@@ -4,6 +4,9 @@ import Web.View.Prelude
 data IndexView = IndexView { jingles :: [Jingle] }
 
 instance View IndexView where
+    beforeRender view = do
+        setLayout loggedInLayout
+        
     html IndexView { .. } = [hsx|
         {breadcrumb}
 

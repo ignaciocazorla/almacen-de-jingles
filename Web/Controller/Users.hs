@@ -49,18 +49,8 @@ instance Controller UsersController where
                         |> set #passwordHash hashed
                         |> createRecord
                     setSuccessMessage "You have registered successfully"
-                    redirectToPath "/"
+                    redirectTo NewSessionAction
 
-    -- action CreateUserAction = do
-    --     let user = newRecord @User
-    --     user
-    --         |> buildUser
-    --         |> ifValid \case
-    --             Left user -> render NewView { .. } 
-    --             Right user -> do
-    --                 user <- user |> createRecord
-    --                 setSuccessMessage "User created"
-    --                 redirectTo UsersAction
 
     action DeleteUserAction { userId } = do
         user <- fetch userId
