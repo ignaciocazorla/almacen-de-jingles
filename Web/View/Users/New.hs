@@ -4,6 +4,7 @@ import Web.View.Prelude
 data NewView = NewView { user :: User }
 
 instance View NewView where
+
     html NewView { .. } = [hsx|
         {breadcrumb}
         <h1>New User</h1>

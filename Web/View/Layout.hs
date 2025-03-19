@@ -1,4 +1,4 @@
-module Web.View.Layout (defaultLayout, notLoggedInLayout, Html) where
+module Web.View.Layout (defaultLayout, loggedInLayout, Html) where
 
 import IHP.ViewPrelude
 import IHP.Environment
@@ -21,7 +21,6 @@ defaultLayout inner = [hsx|
         <title>{pageTitleOrDefault "App"}</title>
     </head>
     <body>
-        {navbar}
         <div class="container mt-4">
             {renderFlashMessages}
             {inner}
@@ -30,8 +29,8 @@ defaultLayout inner = [hsx|
 </html>
 |]
 
-notLoggedInLayout :: Html -> Html
-notLoggedInLayout inner = [hsx|
+loggedInLayout :: Html -> Html
+loggedInLayout inner = [hsx|
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -43,6 +42,7 @@ notLoggedInLayout inner = [hsx|
         <title>{pageTitleOrDefault "App"}</title>
     </head>
     <body>
+        {navbar}
         <div class="container mt-4">
             {renderFlashMessages}
             {inner}
