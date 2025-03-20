@@ -12,7 +12,7 @@ instance View NewView where
         where
             breadcrumb = renderBreadcrumb
                 [ breadcrumbLink "Jingles" JinglesAction
-                , breadcrumbText "New Jingle"
+                , breadcrumbText "Nuevo Jingle"
                 ]
 
 renderForm :: Jingle -> Html

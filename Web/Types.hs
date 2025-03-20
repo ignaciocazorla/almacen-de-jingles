@@ -55,6 +55,18 @@ roleToInt Admin  = 0
 roleToInt Editor = 1
 roleToInt Reader = 2
 
+hasPermission :: UserRole -> Resources -> Permissions -> Bool
+hasPermission Admin  _       _    = True
+hasPermission Editor Users   _    = False
+hasPermission Editor Jingles Read = True
+hasPermission Editor Jingles Edit = True
+hasPermission Editor Jingles List = True
+hasPermission Editor Jingles _    = False
+hasPermission Reader Users   _    = False
+hasPermission Reader Jingles Read = True
+hasPermission Reader Jingles List = True
+hasPermission Reader Jingles _    = False
+
 data Permissions
     = Read
     | Edit

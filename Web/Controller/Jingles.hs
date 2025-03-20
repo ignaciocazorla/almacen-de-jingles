@@ -14,6 +14,7 @@ instance Controller JinglesController where
         render IndexView { .. }
 
     action NewJingleAction = do
+        accessDeniedUnless ( hasRolePermissions currentUser Jingles Create)
         let jingle = newRecord
         render NewView { .. }
 
@@ -22,10 +23,12 @@ instance Controller JinglesController where
         render ShowView { .. }
 
     action EditJingleAction { jingleId } = do
+        accessDeniedUnless ( hasRolePermissions currentUser Jingles Edit)
         jingle <- fetch jingleId
         render EditView { .. }
 
     action UpdateJingleAction { jingleId } = do
+        accessDeniedUnless ( hasRolePermissions currentUser Jingles Edit)
         jingle <- fetch jingleId
         jingle
             |> buildJingle
@@ -37,6 +40,7 @@ instance Controller JinglesController where
                     redirectTo EditJingleAction { .. }
 
     action CreateJingleAction = do
+        accessDeniedUnless ( hasRolePermissions currentUser Jingles Create)
         let jingle = newRecord @Jingle
         jingle
             |> buildJingle
@@ -48,6 +52,7 @@ instance Controller JinglesController where
                     redirectTo JinglesAction
 
     action DeleteJingleAction { jingleId } = do
+        accessDeniedUnless ( hasRolePermissions currentUser Jingles Delete)
         jingle <- fetch jingleId
         deleteRecord jingle
         setSuccessMessage "Jingle eliminado"
