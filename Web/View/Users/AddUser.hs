@@ -1,18 +1,18 @@
-module Web.View.Users.Edit where
+module Web.View.Users.AddUser where
 import Web.View.Prelude
 
-data EditView = EditView { user :: User }
+data AddUserView = AddUserView { user :: User }
 
-instance View EditView where
-    html EditView { .. } = [hsx|
+instance View AddUserView where
+    html AddUserView { .. } = [hsx|
         {breadcrumb}
-        <h1>Edit User</h1>
+        <h1>Agregar usuario</h1>
         {renderForm user}
     |]
         where
             breadcrumb = renderBreadcrumb
                 [ breadcrumbLink "Users" UsersAction
-                , breadcrumbText "Editar usuario"
+                , breadcrumbText "Edit User"
                 ]
 
 renderForm :: User -> Html

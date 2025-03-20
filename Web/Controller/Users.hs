@@ -3,15 +3,23 @@ module Web.Controller.Users where
 import Web.Controller.Prelude
 import Web.View.Users.New
 import Web.View.Users.Edit
+import Web.View.Users.Index
+import Web.View.Users.AddUser
 
 instance Controller UsersController where
     action UsersAction = do
-        let user = newRecord
-        render NewView { .. }
+        accessDeniedUnless ( hasRolePermissions currentUser Users List)
+        users <- query @User |> fetch
+        render IndexView { .. }
 
     action NewUserAction = do
         let user = newRecord
         render NewView { .. }
+
+    action AddNewUserAction = do
+        accessDeniedUnless ( hasRolePermissions currentUser Users List)
+        let user = newRecord
+        render AddUserView { .. }
 
     action EditUserAction { userId } = do
         user <- fetch userId
@@ -25,7 +33,7 @@ instance Controller UsersController where
                 Left user -> render EditView { .. }
                 Right user -> do
                     user <- user |> updateRecord
-                    setSuccessMessage "User updated"
+                    setSuccessMessage "Usuario actualizado"
                     redirectTo EditUserAction { .. }
 
     action CreateUserAction = do
@@ -36,7 +44,7 @@ instance Controller UsersController where
             |> fill @["email", "passwordHash"]
             -- We ensure that the error message doesn't include
             -- the entered password.
-            |> validateField #passwordHash (isEqual passwordConfirmation |> withCustomErrorMessage "Passwords don't match")
+            |> validateField #passwordHash (isEqual passwordConfirmation |> withCustomErrorMessage "Las contraseñas no coinciden")
             |> validateField #passwordHash nonEmpty
             |> validateField #email isEmail
             -- After this validation, since it's operation on the IO, we'll need to use >>=.
@@ -48,15 +56,16 @@ instance Controller UsersController where
                     user <- user
                         |> set #passwordHash hashed
                         |> createRecord
-                    setSuccessMessage "You have registered successfully"
+                    setSuccessMessage "Te registraste exitosamente"
                     redirectTo NewSessionAction
 
 
     action DeleteUserAction { userId } = do
+        accessDeniedUnless ( hasRolePermissions currentUser Users List)
         user <- fetch userId
         deleteRecord user
-        setSuccessMessage "User deleted"
+        setSuccessMessage "Usuario eliminado"
         redirectTo UsersAction
 
 buildUser user = user
-    |> fill @'["email", "passwordHash", "failedLoginAttempts"]
+    |> fill @'["email", "passwordHash", "failedLoginAttempts", "userRoleId"]
