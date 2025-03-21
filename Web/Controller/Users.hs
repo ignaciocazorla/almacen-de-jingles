@@ -52,7 +52,7 @@ instance Controller UsersController where
             -- After this validation, since it's operation on the IO, we'll need to use >>=.
             |> validateIsUnique #email
             >>= ifValid \case
-                Left user -> render NewView { .. }
+                Left user -> render AddUserView { .. }
                 Right user -> do
                     hashed <- hashPassword user.passwordHash
                     user <- user

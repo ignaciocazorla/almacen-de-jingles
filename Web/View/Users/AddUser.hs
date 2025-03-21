@@ -14,8 +14,8 @@ instance View AddUserView where
     |]
         where
             breadcrumb = renderBreadcrumb
-                [ breadcrumbLink "Users" UsersAction
-                , breadcrumbText "Editar Usario"
+                [ breadcrumbLink "Usuarios" UsersAction
+                , breadcrumbText "Agregar Usuario"
                 ]
 
 renderForm :: User -> Html
