@@ -53,10 +53,24 @@ loggedInLayout inner = [hsx|
 
 navbar :: Html
 navbar = [hsx|
-    <nav class="d-flex">
-        <h3>Hola {currentUser.email} <a class="js-delete js-delete-no-confirm btn btn-primary ms-4" href={DeleteSessionAction}>Logout</a> </h3>
-    </nav>
+<nav class="navbar">
+    <div class="container">
+        <ul class="nav-list">
+            <li><a href={JinglesAction} class="nav-link">Jingles</a></li>
+            {usersItem}
+            <li class="nav-user nav-right">
+                <span>Hola {currentUser.email}</span>
+                <a class="js-delete js-delete-no-confirm btn btn-primary ms-4 logout-btn" href={DeleteSessionAction}>Logout</a> 
+            </li>
+        </ul>
+    </div>
+</nav>
+
 |]
+
+usersItem :: Html
+usersItem = hasRolePermissions currentUser Users List 
+            [hsx| <li><a href={UsersAction} class="nav-link">Usuarios</a></li> |]
 
 -- The 'assetPath' function used below appends a `?v=SOME_VERSION` to the static assets in production
 -- This is useful to avoid users having old CSS and JS files in their browser cache once a new version is deployed

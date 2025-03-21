@@ -12,7 +12,18 @@ hasRolePermissions user resource permission html =
 renderElem True html  = html
 renderElem False hmtl = [hsx||]
 
--- renderForAdmin :: UserRole -> Html -> Html
--- renderForAdmin Admin elem = elem
--- renderForAdmin _     elem = [hsx||] 
+data Role = Role {
+    value   :: Int,
+    name    :: Text
+} deriving (Show)
+
+roles = [Role {value = 0, name = "Admin"}, Role {value = 1, name = "Editor"}, Role {value = 2, name = "Reader"}]
+
+instance CanSelect Role where
+    -- Here we specify that the <option> value should contain an `Int`
+    type SelectValue Role = Int
+    -- Here we specify how to transform the model into <option>-value
+    selectValue role = role.value
+    -- And here we specify the <option>-text
+    selectLabel role = role.name
                                

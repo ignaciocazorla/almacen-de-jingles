@@ -4,6 +4,9 @@ import Web.View.Prelude
 data AddUserView = AddUserView { user :: User }
 
 instance View AddUserView where
+    beforeRender view = do
+        setLayout loggedInLayout
+        
     html AddUserView { .. } = [hsx|
         {breadcrumb}
         <h1>Agregar usuario</h1>
@@ -12,14 +15,15 @@ instance View AddUserView where
         where
             breadcrumb = renderBreadcrumb
                 [ breadcrumbLink "Users" UsersAction
-                , breadcrumbText "Edit User"
+                , breadcrumbText "Editar Usario"
                 ]
 
 renderForm :: User -> Html
-renderForm user = formFor user [hsx|
+renderForm user = formFor' user (pathTo AddUserAction) [hsx|
     {(emailField #email)}
-    {(passwordField #passwordHash) {fieldLabel = "Contraseña"}}
-    {(passwordField #passwordHash) {fieldLabel = "Repetir contraseña"}}
-    {submitButton {label = "Crear Usuario"}}
+    {(passwordField #passwordHash) {fieldLabel = "Contraseña", required = True}}
+    {(passwordField #passwordHash) { required = True, fieldLabel = "Confirmar contraseña", fieldName = "passwordConfirmation", validatorResult = Nothing }}
+    {(selectField #userRoleId roles) {fieldLabel = "Rol del usuario", placeholder = "Seleccionar Rol"}}
+    {submitButton {label = "Agregar Usuario"}}
 
 |]

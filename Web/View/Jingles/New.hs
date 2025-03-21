@@ -4,6 +4,9 @@ import Web.View.Prelude
 data NewView = NewView { jingle :: Jingle }
 
 instance View NewView where
+    beforeRender view = do
+        setLayout loggedInLayout
+        
     html NewView { .. } = [hsx|
         {breadcrumb}
         <h1>Nuevo Jingle</h1>

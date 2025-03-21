@@ -4,22 +4,24 @@ import Web.View.Prelude
 data EditView = EditView { user :: User }
 
 instance View EditView where
+    beforeRender view = do
+        setLayout loggedInLayout
+        
     html EditView { .. } = [hsx|
         {breadcrumb}
-        <h1>Edit User</h1>
+        <h1>Editar usuario</h1>
         {renderForm user}
     |]
         where
             breadcrumb = renderBreadcrumb
-                [ breadcrumbLink "Users" UsersAction
+                [ breadcrumbLink "Usuarios" UsersAction
                 , breadcrumbText "Editar usuario"
                 ]
 
 renderForm :: User -> Html
 renderForm user = formFor user [hsx|
     {(emailField #email)}
-    {(passwordField #passwordHash) {fieldLabel = "Contraseña"}}
-    {(passwordField #passwordHash) {fieldLabel = "Repetir contraseña"}}
-    {submitButton {label = "Crear Usuario"}}
+    {(selectField #userRoleId roles) {fieldLabel = "Rol del usuario", placeholder = "Seleccionar Rol"}}
+    {submitButton {label = "Editar Usuario"}}
 
 |]

@@ -4,6 +4,9 @@ import Web.View.Prelude
 data EditView = EditView { jingle :: Jingle }
 
 instance View EditView where
+    beforeRender view = do
+        setLayout loggedInLayout
+
     html EditView { .. } = [hsx|
         {breadcrumb}
         <h1>Editar Jingle</h1>

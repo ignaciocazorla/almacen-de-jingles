@@ -17,15 +17,17 @@ instance Controller UsersController where
         render NewView { .. }
 
     action AddNewUserAction = do
-        accessDeniedUnless ( hasRolePermissions currentUser Users List)
+        accessDeniedUnless ( hasRolePermissions currentUser Users Create)
         let user = newRecord
         render AddUserView { .. }
 
     action EditUserAction { userId } = do
+        accessDeniedUnless ( hasRolePermissions currentUser Users Edit)
         user <- fetch userId
         render EditView { .. }
 
     action UpdateUserAction { userId } = do
+        accessDeniedUnless ( hasRolePermissions currentUser Users Edit)
         user <- fetch userId
         user
             |> buildUser
@@ -35,6 +37,29 @@ instance Controller UsersController where
                     user <- user |> updateRecord
                     setSuccessMessage "Usuario actualizado"
                     redirectTo EditUserAction { .. }
+
+    action AddUserAction = do
+        let user = newRecord @User
+        -- The value from the password confirmation input field.
+        let passwordConfirmation = param @Text "passwordConfirmation"
+        user
+            |> fill @["email", "passwordHash", "userRoleId"]
+            -- We ensure that the error message doesn't include
+            -- the entered password.
+            |> validateField #passwordHash (isEqual passwordConfirmation |> withCustomErrorMessage "Las contraseñas no coinciden")
+            |> validateField #passwordHash nonEmpty
+            |> validateField #email isEmail
+            -- After this validation, since it's operation on the IO, we'll need to use >>=.
+            |> validateIsUnique #email
+            >>= ifValid \case
+                Left user -> render NewView { .. }
+                Right user -> do
+                    hashed <- hashPassword user.passwordHash
+                    user <- user
+                        |> set #passwordHash hashed
+                        |> createRecord
+                    setSuccessMessage "Registraste un usuario exitosamente"
+                    redirectTo UsersAction
 
     action CreateUserAction = do
         let user = newRecord @User

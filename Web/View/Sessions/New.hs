@@ -9,7 +9,7 @@ instance View (NewView User) where
             <div class="d-flex align-items-center">
                 <div class="w-100">
                     <div style="max-width: 400px" class="mx-auto mb-5">
-                        <h5>Please login</h5>
+                        <h5>Login</h5>
                         {renderForm user}
                         <a href={pathTo NewUserAction} class="btn btn-primary btn-block">Registrarse</a>
                     </div>
@@ -26,7 +26,7 @@ renderForm user = [hsx|
             <input name="email" value={user.email} type="email" class="form-control" placeholder="E-Mail" required="required" autofocus="autofocus" />
         </div>
         <div class="form-group">
-            <input name="password" type="password" class="form-control" placeholder="Password"/>
+            <input name="password" type="password" class="form-control" placeholder="Contraseña"/>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Login</button>
     </form>
