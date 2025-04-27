@@ -62,13 +62,7 @@ instance Controller UsersController where
         let passwordConfirmation = param @Text "passwordConfirmation"
         user
             |> fill @["email", "passwordHash", "userRoleId"]
-            -- We ensure that the error message doesn't include
-            -- the entered password.
-            |> validateField #passwordHash (isEqual passwordConfirmation |> withCustomErrorMessage "Las contraseñas no coinciden")
-            |> validateField #passwordHash nonEmpty
-            |> validateField #email isEmail
-            -- After this validation, since it's operation on the IO, we'll need to use >>=.
-            |> validateIsUnique #email
+            |> validateUserFields passwordConfirmation
             >>= ifValid \case
                 Left user -> render AddUserView { .. }
                 Right user -> do
@@ -85,13 +79,7 @@ instance Controller UsersController where
         let passwordConfirmation = param @Text "passwordConfirmation"
         user
             |> fill @["email", "passwordHash"]
-            -- We ensure that the error message doesn't include
-            -- the entered password.
-            |> validateField #passwordHash (isEqual passwordConfirmation |> withCustomErrorMessage "Las contraseñas no coinciden")
-            |> validateField #passwordHash nonEmpty
-            |> validateField #email isEmail
-            -- After this validation, since it's operation on the IO, we'll need to use >>=.
-            |> validateIsUnique #email
+            |> validateUserFields passwordConfirmation
             >>= ifValid \case
                 Left user -> render NewView { .. }
                 Right user -> do
@@ -112,3 +100,12 @@ instance Controller UsersController where
 
 buildUser user = user
     |> fill @'["email", "passwordHash", "failedLoginAttempts", "userRoleId"]
+
+validateUserFields passwordConfirmation user = user
+    -- We ensure that the error message doesn't include
+    -- the entered password.
+    |> validateField #passwordHash (isEqual passwordConfirmation |> withCustomErrorMessage "Las contraseñas no coinciden")
+    |> validateField #passwordHash nonEmpty
+    |> validateField #email isEmail
+    -- After this validation, since it's operation on the IO, we'll need to use >>=.
+    |> validateIsUnique #email
