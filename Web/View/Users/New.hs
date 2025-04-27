@@ -22,8 +22,8 @@ import Web.View.Prelude
 data NewView = NewView { user :: User }
 
 instance View NewView where
-    beforeRender view = do
-        setLayout loggedInLayout
+    -- beforeRender view = do
+    --     setLayout loggedInLayout
 
     html NewView { .. } = [hsx|
         {breadcrumb}

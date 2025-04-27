@@ -44,7 +44,6 @@ data JinglesController
 data UsersController
     = UsersAction
     | NewUserAction
-    | ShowUserAction { userId :: !(Id User) }
     | AddUserAction
     | CreateUserAction
     | EditUserAction { userId :: !(Id User) }
@@ -68,6 +67,7 @@ roleFromInt :: Int -> UserRole
 roleFromInt 0 = Admin
 roleFromInt 1 = Editor
 roleFromInt 2 = Reader
+roleFromInt _ = Reader
     
 roleToInt :: UserRole -> Int
 roleToInt Admin  = 0

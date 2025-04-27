@@ -1,0 +1,1 @@
+ALTER TABLE users ADD COLUMN user_role_id INT DEFAULT 2 NOT NULL;

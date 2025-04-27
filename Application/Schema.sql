@@ -17,4 +17,3 @@ CREATE TABLE users (
     failed_login_attempts INT DEFAULT 0 NOT NULL,
     user_role_id INT DEFAULT 2 NOT NULL
 );
-CREATE INDEX users_user_role_id_index ON users (user_role_id);
