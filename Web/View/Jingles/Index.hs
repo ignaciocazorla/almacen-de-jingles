@@ -28,7 +28,7 @@ instance View IndexView where
     html IndexView { .. } = [hsx|
         {breadcrumb}
 
-        <h1>Listado de Jingles {newJingleButton}</h1>
+        <h1>Listado de Jingles {renderNewJingleButton}</h1>
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -47,19 +47,33 @@ instance View IndexView where
             breadcrumb = renderBreadcrumb
                 [ breadcrumbLink "Jingles" JinglesAction
                 ]
-            newJingleButton = hasRolePermissions currentUser Jingles Create
-                [hsx| <a href={pathTo NewJingleAction} class="btn btn-primary ms-4">+ Nuevo</a> |]
+            renderNewJingleButton = 
+                case currentUserOrNothing of
+                    Just _ -> 
+                        hasRolePermissions currentUser Jingles Create
+                            [hsx| <a href={pathTo NewJingleAction} class="btn btn-primary ms-4">+ Nuevo</a> |]
+                    Nothing -> [hsx||]
+                
 
 renderJingle :: Jingle -> Html
 renderJingle jingle = [hsx|
     <tr>
         <td><a href={ShowJingleAction jingle.id}>{jingle.nombre}</a></td>
-        {editButton}
-        {deleteButton}
+        {renderEditButton}
+        {renderDeleteButton}
     </tr>
     |]
     where 
-        editButton = hasRolePermissions currentUser Jingles Edit
-                [hsx| <td><a href={EditJingleAction jingle.id} class="text-muted">Editar</a></td> |]
-        deleteButton = hasRolePermissions currentUser Jingles Delete
-                [hsx| <td><a href={DeleteJingleAction jingle.id} class="js-delete text-muted">Borrar</a></td> |]
+        renderEditButton = 
+            case currentUserOrNothing of
+                    Just _ -> 
+                        hasRolePermissions currentUser Jingles Edit
+                            [hsx| <td><a href={EditJingleAction jingle.id} class="text-muted">Editar</a></td> |]
+                    Nothing -> [hsx||]
+    
+        renderDeleteButton = 
+            case currentUserOrNothing of
+                    Just _ -> 
+                        hasRolePermissions currentUser Jingles Delete
+                            [hsx| <td><a href={DeleteJingleAction jingle.id} class="js-delete text-muted">Borrar</a></td> |]
+                    Nothing -> [hsx||]

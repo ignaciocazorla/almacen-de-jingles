@@ -60,7 +60,7 @@ loggedInLayout inner = [hsx|
         <title>{pageTitleOrDefault "App"}</title>
     </head>
     <body>
-        {navbar}
+        {renderNavbar}
         <div class="container mt-4">
             {renderFlashMessages}
             {inner}
@@ -68,6 +68,12 @@ loggedInLayout inner = [hsx|
     </body>
 </html>
 |]
+
+renderNavbar :: Html
+renderNavbar = 
+    case currentUserOrNothing of
+        Just currentUser -> navbar
+        Nothing -> [hsx| <a href={NewSessionAction}>Ingresar</a> |]
 
 navbar :: Html
 navbar = [hsx|

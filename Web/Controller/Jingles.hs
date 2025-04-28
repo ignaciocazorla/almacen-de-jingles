@@ -25,13 +25,13 @@ import Web.View.Jingles.Edit
 import Web.View.Jingles.Show
 
 instance Controller JinglesController where
-    beforeAction = ensureIsUser
 
     action JinglesAction = do
         jingles <- query @Jingle |> fetch
         render IndexView { .. }
 
     action NewJingleAction = do
+        ensureIsUser
         accessDeniedUnless ( hasRolePermissions currentUser Jingles Create)
         let jingle = newRecord
         render NewView { .. }
@@ -41,11 +41,13 @@ instance Controller JinglesController where
         render ShowView { .. }
 
     action EditJingleAction { jingleId } = do
+        ensureIsUser
         accessDeniedUnless ( hasRolePermissions currentUser Jingles Edit)
         jingle <- fetch jingleId
         render EditView { .. }
 
     action UpdateJingleAction { jingleId } = do
+        ensureIsUser
         accessDeniedUnless ( hasRolePermissions currentUser Jingles Edit)
         jingle <- fetch jingleId
         jingle
@@ -58,6 +60,7 @@ instance Controller JinglesController where
                     redirectTo EditJingleAction { .. }
 
     action CreateJingleAction = do
+        ensureIsUser
         accessDeniedUnless ( hasRolePermissions currentUser Jingles Create)
         let jingle = newRecord @Jingle
         jingle
@@ -70,6 +73,7 @@ instance Controller JinglesController where
                     redirectTo JinglesAction
 
     action DeleteJingleAction { jingleId } = do
+        ensureIsUser
         accessDeniedUnless ( hasRolePermissions currentUser Jingles Delete)
         jingle <- fetch jingleId
         deleteRecord jingle
