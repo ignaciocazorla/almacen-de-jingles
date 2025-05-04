@@ -39,6 +39,8 @@ instance View AddUserView where
 renderForm :: User -> Html
 renderForm user = formFor' user (pathTo AddUserAction) [hsx|
     {(emailField #email)}
+    {(textField #name) {fieldLabel = "Nombre", required = True}}
+    {(textField #lastName) {fieldLabel = "Apellido", required = True}}
     {(passwordField #passwordHash) {fieldLabel = "Contraseña", required = True}}
     {(passwordField #passwordHash) { required = True, fieldLabel = "Confirmar contraseña", fieldName = "passwordConfirmation", validatorResult = Nothing }}
     {(selectField #userRoleId roles) {fieldLabel = "Rol del usuario", placeholder = "Seleccionar Rol"}}

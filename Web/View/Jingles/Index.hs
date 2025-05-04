@@ -42,8 +42,6 @@ instance View IndexView where
                         <th onclick="sortTable(2)">Fecha</th>
                         <th onclick="sortTable(3)">Artista Original</th>
                         <th onclick="sortTable(4)">Interprete</th>
-                        <th></th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>{forEach jingles renderJingle}</tbody>

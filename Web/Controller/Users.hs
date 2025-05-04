@@ -61,7 +61,7 @@ instance Controller UsersController where
         -- The value from the password confirmation input field.
         let passwordConfirmation = param @Text "passwordConfirmation"
         user
-            |> fill @["email", "passwordHash", "userRoleId"]
+            |> fill @["email", "name", "lastName", "passwordHash", "userRoleId"]
             |> validateUserFields passwordConfirmation
             >>= ifValid \case
                 Left user -> render AddUserView { .. }
@@ -78,7 +78,7 @@ instance Controller UsersController where
         -- The value from the password confirmation input field.
         let passwordConfirmation = param @Text "passwordConfirmation"
         user
-            |> fill @["email", "passwordHash"]
+            |> fill @["email", "name", "lastName", "passwordHash"]
             |> validateUserFields passwordConfirmation
             >>= ifValid \case
                 Left user -> render NewView { .. }
@@ -99,7 +99,7 @@ instance Controller UsersController where
         redirectTo UsersAction
 
 buildUser user = user
-    |> fill @'["email", "passwordHash", "failedLoginAttempts", "userRoleId"]
+    |> fill @'["email", "name", "lastName", "passwordHash", "failedLoginAttempts", "userRoleId"]
 
 validateUserFields passwordConfirmation user = user
     -- We ensure that the error message doesn't include

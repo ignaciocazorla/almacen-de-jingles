@@ -39,6 +39,8 @@ instance View EditView where
 renderForm :: User -> Html
 renderForm user = formFor user [hsx|
     {(emailField #email)}
+    {(textField #name) {fieldLabel = "Nombre", required = True}}
+    {(textField #lastName) {fieldLabel = "Apellido", required = True}}
     {(selectField #userRoleId roles) {fieldLabel = "Rol del usuario", placeholder = "Seleccionar Rol"}}
     {submitButton {label = "Editar Usuario"}}
 

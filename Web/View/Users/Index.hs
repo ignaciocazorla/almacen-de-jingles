@@ -33,7 +33,9 @@ instance View IndexView where
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -54,6 +56,8 @@ renderUser :: User -> Html
 renderUser user = [hsx|
     <tr>
         <td>{user.email}</td>
+        <td>{user.name}</td>
+        <td>{user.lastName}</td>
         <td><a href={EditUserAction user.id} class="text-muted">Editar</a></td>
         <td><a href={DeleteUserAction user.id} class="js-delete text-muted">Borrar</a></td>
     </tr>
