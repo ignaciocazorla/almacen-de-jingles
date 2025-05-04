@@ -18,6 +18,7 @@ You may read the full license at https://github.com/ignaciocazorla/almacen-de-ji
 
 module Web.View.Jingles.Index where
 import Web.View.Prelude
+import Data.Aeson
 
 data IndexView = IndexView { jingles :: [Jingle] }
 
@@ -28,12 +29,19 @@ instance View IndexView where
     html IndexView { .. } = [hsx|
         {breadcrumb}
 
+        <script src="/js/sortTable.js"></script>
+        <link rel="stylesheet" href="/css/jinglesTable.css"/>
+
         <h1>Listado de Jingles {renderNewJingleButton}</h1>
         <div class="table-responsive">
-            <table class="table">
+            <table id="jingles-table" class="table">
                 <thead>
                     <tr>
-                        <th>Jingle</th>
+                        <th onclick="sortTable(0)">Jingle</th>
+                        <th onclick="sortTable(1)">Video</th>
+                        <th onclick="sortTable(2)">Fecha</th>
+                        <th onclick="sortTable(3)">Artista Original</th>
+                        <th onclick="sortTable(4)">Interprete</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -53,12 +61,15 @@ instance View IndexView where
                         hasRolePermissions currentUser Jingles Create
                             [hsx| <a href={pathTo NewJingleAction} class="btn btn-primary ms-4">+ Nuevo</a> |]
                     Nothing -> [hsx||]
-                
 
 renderJingle :: Jingle -> Html
 renderJingle jingle = [hsx|
     <tr>
         <td><a href={ShowJingleAction jingle.id}>{jingle.nombre}</a></td>
+        <td><a href={jingle.link} target="_blank">{jingle.nombreVideo}</a></td>
+        <td>{jingle.fecha}</td>
+        <td>{jingle.bandaOriginal}</td>
+        <td>{jingle.creadoPor}</td>
         {renderEditButton}
         {renderDeleteButton}
     </tr>

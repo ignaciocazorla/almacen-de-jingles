@@ -33,7 +33,7 @@ instance View IndexView where
             <table class="table">
                 <thead>
                     <tr>
-                        <th>User</th>
+                        <th>Usuario</th>
                         <th></th>
                         <th></th>
                         <th></th>
