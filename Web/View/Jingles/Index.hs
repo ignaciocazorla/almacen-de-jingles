@@ -37,11 +37,11 @@ instance View IndexView where
             <table id="jingles-table" class="table">
                 <thead>
                     <tr>
-                        <th onclick="sortTable(0)">Jingle</th>
-                        <th onclick="sortTable(1)">Video</th>
-                        <th onclick="sortTable(2)">Fecha</th>
-                        <th onclick="sortTable(3)">Artista Original</th>
-                        <th onclick="sortTable(4)">Interprete</th>
+                        <th onclick="updateTable(0)" class="headerSortDown" data-order="desc">Jingle</th>
+                        <th onclick="updateTable(1)">Video</th>
+                        <th onclick="updateTable(2)">Fecha</th>
+                        <th onclick="updateTable(3)">Artista Original</th>
+                        <th onclick="updateTable(4)">Interprete</th>
                     </tr>
                 </thead>
                 <tbody>{forEach jingles renderJingle}</tbody>
