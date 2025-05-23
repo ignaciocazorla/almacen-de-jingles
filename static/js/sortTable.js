@@ -1,42 +1,59 @@
-let ascendingOrder = false; // asc = true, desc = false
 const headerSortDownClass = "headerSortDown";
 const headerSortUpClass = "headerSortUp";
 const tableName = "jingles-table";
+const orderAttribute = "data-order";
 
 const isNumber = (x,y) => !isNaN(x) && !isNaN(y);
 
 const tableBodyRows = table => Array.from(table.rows).slice(1);
 
-const compareRows = (a, b, columnIndex) => {
+const compareRows = (a, b, columnIndex, order) => {
     const x = a.cells[columnIndex].innerText;
     const y = b.cells[columnIndex].innerText;
 
     if (isNumber(x,y)) {
-        return ascendingOrder ? x - y : y - x;
+        return stringOrderToBool(order) ? x - y : y - x;
     } else {
-        return ascendingOrder
+        return stringOrderToBool(order)
             ? x.localeCompare(y)
             : y.localeCompare(x);
     }
 }
 
+const sortRowsForCol = (rows, columnIndex, order) => rows.sort((a,b) => compareRows(a,b,columnIndex,order));
+
+const stringOrderToBool = stringOrder => {
+    switch (stringOrder) {
+        case "asc":
+            return true;
+        case "desc":
+            return false;
+    }
+}
+
+const boolOrderToString = order => order ? "asc" : "desc";
+
+const boolOrderToClass = order => order ? headerSortUpClass : headerSortDownClass;
+
 function updateTable(columnIndex) {
     const table = document.getElementById(tableName);
-    sortRowsForCol(tableBodyRows(table), columnIndex).forEach(row => table.tBodies[0].appendChild(row));
-    ascendingOrder = !ascendingOrder;
-    updateTableHeadRow(table, columnIndex);
+    const headers = Array.from(table.rows[0].cells);
+    const elem = headers.find(each => each.hasAttribute(orderAttribute));
+    let order = elem.getAttribute(orderAttribute);
+    let sortedBody = sortRowsForCol(tableBodyRows(table), columnIndex, order);
+    sortedBody.forEach(row => table.tBodies[0].appendChild(row));
+    updateTableHeadRow(headers, columnIndex, stringOrderToBool(order));
 }
 
-const sortRowsForCol = (rows, columnIndex) => rows.sort((a,b) => compareRows(a,b,columnIndex));
-
-// Iterates over all elements to add actual order cell an arrow and remove arrow from previous elem
-function updateTableHeadRow(table, columnIndex){
-    let headers = Array.from(table.rows[0].cells);
-    headers.forEach(each => each.className = "");
-    headers[columnIndex].className = newCellOrder();
+// Find index of prev cell to add actual cell an arrow and remove arrow from previous elem
+function updateTableHeadRow(headers, columnIndex, order){
+    let index = headers.findIndex(each => each.hasAttribute(orderAttribute));
+    if(index != columnIndex){
+        headers[index].removeAttribute(orderAttribute);
+    }
+    headers[index].classList.remove(boolOrderToClass(order));
+    headers[columnIndex].classList.add(boolOrderToClass(!order));
+    headers[columnIndex].setAttribute(orderAttribute,boolOrderToString(!order));
 }
-
-// Depending on ascendingOrder previous value set header arrow
-const newCellOrder = () => ascendingOrder ? headerSortUpClass : headerSortDownClass;
 
 window.sortTable = updateTable;
