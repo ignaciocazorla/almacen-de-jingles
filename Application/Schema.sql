@@ -7,7 +7,8 @@ CREATE TABLE jingles (
     tiempo_inicio TEXT DEFAULT NULL,
     nombre_video TEXT NOT NULL,
     banda_original TEXT DEFAULT NULL,
-    creado_por TEXT DEFAULT NULL
+    creado_por TEXT DEFAULT NULL,
+    user_id UUID NOT NULL
 );
 CREATE TABLE users (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
@@ -19,3 +20,5 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     last_name TEXT NOT NULL
 );
+CREATE INDEX jingles_user_id_index ON jingles (user_id);
+ALTER TABLE jingles ADD CONSTRAINT jingles_ref_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE NO ACTION;

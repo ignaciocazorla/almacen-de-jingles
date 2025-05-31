@@ -64,6 +64,7 @@ instance Controller JinglesController where
         accessDeniedUnless ( hasRolePermissions currentUser Jingles Create)
         let jingle = newRecord @Jingle
         jingle
+            |> set #userId currentUser.id
             |> buildJingle
             |> ifValid \case
                 Left jingle -> render NewView { .. } 
@@ -81,7 +82,7 @@ instance Controller JinglesController where
         redirectTo JinglesAction
 
 buildJingle jingle = jingle
-    |> fill @'["nombre", "fecha", "link", "tiempoInicio", "nombreVideo", "bandaOriginal", "creadoPor"]
+    |> fill @'["nombre", "fecha", "link", "tiempoInicio", "nombreVideo", "bandaOriginal", "creadoPor", "userId"]
     |> validateField #nombre (nonEmpty |> withCustomErrorMessage "Campo obligatorio")
     |> validateField #link (nonEmpty |> withCustomErrorMessage "Campo obligatorio")
     |> validateField #nombreVideo (nonEmpty |> withCustomErrorMessage "Campo obligatorio")
