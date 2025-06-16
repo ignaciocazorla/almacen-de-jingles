@@ -21,9 +21,16 @@ module Config where
 import IHP.Prelude
 import IHP.Environment
 import IHP.FrameworkConfig
+import IHP.EnvVar
+
+
+newtype AdminEmail = AdminEmail Text
+newtype AdminPass = AdminPass Text
 
 config :: ConfigBuilder
 config = do
-    -- See https://ihp.digitallyinduced.com/Guide/config.html
-    -- for what you can do here
+    adminEmail <- AdminEmail <$> env @Text "ADMIN_USER_EMAIL"
+    option adminEmail
+    adminPass <- AdminPass <$> env @Text "ADMIN_USER_PASS"
+    option adminPass
     pure ()
