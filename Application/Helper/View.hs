@@ -23,25 +23,22 @@ import Generated.Types
 import Web.Types
 
 -- Here you can add functions which are available in all your views
-hasRolePermissions :: User -> Resources -> Permissions -> Html -> Html
-hasRolePermissions user resource permission html = 
-    renderElem (hasPermission (roleFromInt user.userRoleId) resource permission) html
+hasRolePermissions :: [UserPermission] -> Text -> Text -> Html -> Html
+hasRolePermissions userPermission resource permission html = 
+    renderElem (hasPermission userPermission resource permission) html
+
+hasPermission :: [UserPermission] -> Text -> Text -> Bool
+hasPermission [] resource action = False
+hasPermission (x:xs) resource action = (x.resource == resource && x.action == action) || hasPermission xs resource action
 
 renderElem True html  = html
 renderElem False hmtl = [hsx||]
 
-data Role = Role {
-    value   :: Int,
-    name    :: Text
-} deriving (Show)
-
-roles = [Role {value = 0, name = "Admin"}, Role {value = 1, name = "Editor"}, Role {value = 2, name = "Reader"}]
-
-instance CanSelect Role where
-    -- Here we specify that the <option> value should contain an `Int`
-    type SelectValue Role = Int
+instance CanSelect UserRole where
+    -- Here we specify that the <option> value should contain an `Id`
+    type SelectValue UserRole = Id UserRole
     -- Here we specify how to transform the model into <option>-value
-    selectValue role = role.value
+    selectValue userRole = userRole.id
     -- And here we specify the <option>-text
-    selectLabel role = role.name
+    selectLabel userRole = userRole.name
                                

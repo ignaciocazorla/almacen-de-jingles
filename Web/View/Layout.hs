@@ -93,8 +93,11 @@ navbar = [hsx|
 |]
 
 usersItem :: Html
-usersItem = hasRolePermissions currentUser Users List 
+usersItem = hasRolePermissions permissions "Users" "List"
             [hsx| <li><a href={UsersAction} class="nav-link">Usuarios</a></li> |]
+
+permissions :: (?context :: ControllerContext) => [UserPermission]
+permissions = fromFrozenContext
 
 -- The 'assetPath' function used below appends a `?v=SOME_VERSION` to the static assets in production
 -- This is useful to avoid users having old CSS and JS files in their browser cache once a new version is deployed

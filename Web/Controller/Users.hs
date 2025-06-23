@@ -26,7 +26,7 @@ import Web.View.Users.AddUser
 
 instance Controller UsersController where
     action UsersAction = do
-        accessDeniedUnless ( hasRolePermissions currentUser Users List)
+        ensurePermission "List"
         users <- query @User |> fetch
         render IndexView { .. }
 
@@ -35,17 +35,17 @@ instance Controller UsersController where
         render NewView { .. }
 
     action AddNewUserAction = do
-        accessDeniedUnless ( hasRolePermissions currentUser Users Create)
+        ensurePermission "Create"
         let user = newRecord
         render AddUserView { .. }
 
     action EditUserAction { userId } = do
-        accessDeniedUnless ( hasRolePermissions currentUser Users Edit)
+        ensurePermission "Edit"
         user <- fetch userId
         render EditView { .. }
 
     action UpdateUserAction { userId } = do
-        accessDeniedUnless ( hasRolePermissions currentUser Users Edit)
+        ensurePermission "Edit"
         user <- fetch userId
         user
             |> buildUser
@@ -92,7 +92,7 @@ instance Controller UsersController where
 
 
     action DeleteUserAction { userId } = do
-        accessDeniedUnless ( hasRolePermissions currentUser Users List)
+        ensurePermission "List"
         user <- fetch userId
         deleteRecord user
         setSuccessMessage "Usuario eliminado"
@@ -109,3 +109,12 @@ validateUserFields passwordConfirmation user = user
     |> validateField #email isEmail
     -- After this validation, since it's operation on the IO, we'll need to use >>=.
     |> validateIsUnique #email
+
+ensurePermission action = do
+    role <- fetch currentUser.userRoleId
+    permission <- query @UserPermission
+                        |> filterWhere (#userRoleId, role.id)
+                        |> filterWhere (#resource, "Users")
+                        |> filterWhere (#action, action)
+                        |> fetch
+    accessDeniedUnless (hasPermission permission)

@@ -42,4 +42,18 @@ instance InitControllerContext WebApplication where
         setLayout defaultLayout
         initAutoRefresh
         initAuthentication @User
+        initUserPermissionsContext
+
+initUserPermissionsContext :: (?context :: ControllerContext, ?modelContext :: ModelContext) => IO ()
+initUserPermissionsContext =
+    case currentUserOrNothing of
+        Just currentUser -> do
+            role <- fetch currentUser.userRoleId
+            permissions <- query @UserPermission
+                        |> filterWhere (#userRoleId, role.id)
+                        |> fetch
+
+            putContext permissions
+
+        Nothing -> pure ()
 

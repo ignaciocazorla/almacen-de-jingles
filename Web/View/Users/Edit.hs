@@ -19,7 +19,7 @@ You may read the full license at https://github.com/ignaciocazorla/almacen-de-ji
 module Web.View.Users.Edit where
 import Web.View.Prelude
 
-data EditView = EditView { user :: User }
+data EditView = EditView { user :: User, roles :: [UserRole] }
 
 instance View EditView where
     beforeRender view = do
@@ -28,7 +28,7 @@ instance View EditView where
     html EditView { .. } = [hsx|
         {breadcrumb}
         <h1>Editar usuario</h1>
-        {renderForm user}
+        {renderForm user roles}
     |]
         where
             breadcrumb = renderBreadcrumb
@@ -36,8 +36,8 @@ instance View EditView where
                 , breadcrumbText "Editar usuario"
                 ]
 
-renderForm :: User -> Html
-renderForm user = formFor user [hsx|
+renderForm :: User -> [UserRole] -> Html
+renderForm user roles = formFor user [hsx|
     {(emailField #email)}
     {(textField #name) {fieldLabel = "Nombre", required = True}}
     {(textField #lastName) {fieldLabel = "Apellido", required = True}}

@@ -22,8 +22,49 @@ module Application.Script.InitializeApp where
 import Application.Script.Prelude
 import Config
 
+
+createPermission roleId resource action = 
+    newRecord @UserPermission 
+            |> set #userRoleId roleId 
+            |> set #resource resource 
+            |> set #action action
+            |> createRecord
+
 run :: Script
 run = do
+    -- Roles
+    adminRole <- newRecord @UserRole
+                |> set #name "Admin"
+                |> createRecord
+    editorRole <- newRecord @UserRole
+                |> set #name "Editor"
+                |> createRecord
+    editorRole <- newRecord @UserRole
+                |> set #name "Reader"
+                |> createRecord
+
+    -- Admin permissions
+    -- Jingles resource
+    createPermission adminRole.id "Jingles" "Create"
+    createPermission adminRole.id "Jingles" "Edit"
+    createPermission adminRole.id "Jingles" "Delete"
+    createPermission adminRole.id "Jingles" "List"
+    createPermission adminRole.id "Jingles" "Read"
+
+    -- Users resource
+    createPermission adminRole.id "Users" "Create"
+    createPermission adminRole.id "Users" "Edit"
+    createPermission adminRole.id "Users" "Delete"
+    createPermission adminRole.id "Users" "List"
+    createPermission adminRole.id "Users" "Read"
+
+    -- Editor permissions
+    -- Jingles resource
+    createPermission editorRole.id "Jingles" "Edit"
+    createPermission editorRole.id "Jingles" "Delete"
+    createPermission editorRole.id "Jingles" "List"
+    createPermission editorRole.id "Jingles" "Read"
+
     let (AdminEmail email) = getAppConfig @Config.AdminEmail
     let (AdminPass pass) = getAppConfig @Config.AdminPass
 
@@ -39,7 +80,7 @@ run = do
             let adminUser = newRecord @User
                     |> set #email email
                     |> set #passwordHash hashedPassword
-                    |> set #userRoleId 0
+                    |> set #userRoleId adminRole.id
 
             adminUser |> create
             putStrLn "Usuario administrador creado con éxito."

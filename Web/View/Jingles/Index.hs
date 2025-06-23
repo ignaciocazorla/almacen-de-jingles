@@ -20,7 +20,7 @@ module Web.View.Jingles.Index where
 import Web.View.Prelude
 import Data.Aeson
 
-data IndexView = IndexView { jingles :: [Jingle] }
+data IndexView = IndexView { jingles :: [Jingle], permissions :: [UserPermission] }
 
 instance View IndexView where
     beforeRender view = do
@@ -44,7 +44,7 @@ instance View IndexView where
                         <th onclick="updateTable(4)">Interprete</th>
                     </tr>
                 </thead>
-                <tbody>{forEach jingles renderJingle}</tbody>
+                <tbody>{forEach jingles (renderJingle permissions) }</tbody>
             </table>
             
         </div>
@@ -56,12 +56,12 @@ instance View IndexView where
             renderNewJingleButton = 
                 case currentUserOrNothing of
                     Just _ -> 
-                        hasRolePermissions currentUser Jingles Create
+                        hasRolePermissions permissions "Jingles" "Create"
                             [hsx| <a href={pathTo NewJingleAction} class="btn btn-primary ms-4">+ Nuevo</a> |]
                     Nothing -> [hsx||]
 
-renderJingle :: Jingle -> Html
-renderJingle jingle = [hsx|
+renderJingle :: [UserPermission] -> Jingle -> Html
+renderJingle permissions jingle = [hsx|
     <tr>
         <td><a href={ShowJingleAction jingle.id}>{jingle.nombre}</a></td>
         <td><a href={jingle.link} target="_blank">{jingle.nombreVideo}</a></td>
@@ -76,13 +76,13 @@ renderJingle jingle = [hsx|
         renderEditButton = 
             case currentUserOrNothing of
                     Just _ -> 
-                        hasRolePermissions currentUser Jingles Edit
+                        hasRolePermissions permissions "Jingles" "Edit"
                             [hsx| <td><a href={EditJingleAction jingle.id} class="text-muted">Editar</a></td> |]
                     Nothing -> [hsx||]
     
         renderDeleteButton = 
             case currentUserOrNothing of
                     Just _ -> 
-                        hasRolePermissions currentUser Jingles Delete
+                        hasRolePermissions permissions "Jingles" "Delete"
                             [hsx| <td><a href={DeleteJingleAction jingle.id} class="js-delete text-muted">Borrar</a></td> |]
                     Nothing -> [hsx||]

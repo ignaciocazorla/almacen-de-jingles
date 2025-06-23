@@ -28,11 +28,15 @@ instance Controller JinglesController where
 
     action JinglesAction = do
         jingles <- query @Jingle |> fetch
+        role <- fetch currentUser.userRoleId
+        permissions <- query @UserPermission
+                        |> filterWhere (#userRoleId, role.id)
+                        |> fetch
         render IndexView { .. }
 
     action NewJingleAction = do
         ensureIsUser
-        accessDeniedUnless ( hasRolePermissions currentUser Jingles Create)
+        ensurePermission "Create"
         let jingle = newRecord
         render NewView { .. }
 
@@ -42,13 +46,13 @@ instance Controller JinglesController where
 
     action EditJingleAction { jingleId } = do
         ensureIsUser
-        accessDeniedUnless ( hasRolePermissions currentUser Jingles Edit)
+        ensurePermission "Edit"
         jingle <- fetch jingleId
         render EditView { .. }
 
     action UpdateJingleAction { jingleId } = do
         ensureIsUser
-        accessDeniedUnless ( hasRolePermissions currentUser Jingles Edit)
+        ensurePermission "Edit"
         jingle <- fetch jingleId
         jingle
             |> buildJingle
@@ -61,7 +65,7 @@ instance Controller JinglesController where
 
     action CreateJingleAction = do
         ensureIsUser
-        accessDeniedUnless ( hasRolePermissions currentUser Jingles Create)
+        ensurePermission "Create"
         let jingle = newRecord @Jingle
         jingle
             |> set #userId currentUser.id
@@ -75,7 +79,7 @@ instance Controller JinglesController where
 
     action DeleteJingleAction { jingleId } = do
         ensureIsUser
-        accessDeniedUnless ( hasRolePermissions currentUser Jingles Delete)
+        ensurePermission "Delete"
         jingle <- fetch jingleId
         deleteRecord jingle
         setSuccessMessage "Jingle eliminado"
@@ -86,3 +90,12 @@ buildJingle jingle = jingle
     |> validateField #nombre (nonEmpty |> withCustomErrorMessage "Campo obligatorio")
     |> validateField #link (nonEmpty |> withCustomErrorMessage "Campo obligatorio")
     |> validateField #nombreVideo (nonEmpty |> withCustomErrorMessage "Campo obligatorio")
+
+ensurePermission action = do
+    role <- fetch currentUser.userRoleId
+    permission <- query @UserPermission
+                        |> filterWhere (#userRoleId, role.id)
+                        |> filterWhere (#resource, "Jingles")
+                        |> filterWhere (#action, action)
+                        |> fetch
+    accessDeniedUnless (hasPermission permission)
