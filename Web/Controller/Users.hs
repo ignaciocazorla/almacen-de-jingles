@@ -37,16 +37,20 @@ instance Controller UsersController where
     action AddNewUserAction = do
         ensurePermission "Create"
         let user = newRecord
+        roles <- query @UserRole |> fetch
         render AddUserView { .. }
 
     action EditUserAction { userId } = do
         ensurePermission "Edit"
         user <- fetch userId
+        roles <- query @UserRole |> fetch
+
         render EditView { .. }
 
     action UpdateUserAction { userId } = do
         ensurePermission "Edit"
         user <- fetch userId
+        roles <- query @UserRole |> fetch
         user
             |> buildUser
             |> ifValid \case
@@ -64,7 +68,7 @@ instance Controller UsersController where
             |> fill @["email", "name", "lastName", "passwordHash", "userRoleId"]
             |> validateUserFields passwordConfirmation
             >>= ifValid \case
-                Left user -> render AddUserView { .. }
+                Left user -> redirectTo AddNewUserAction -- render AddUserView { .. }
                 Right user -> do
                     hashed <- hashPassword user.passwordHash
                     user <- user
@@ -84,8 +88,12 @@ instance Controller UsersController where
                 Left user -> render NewView { .. }
                 Right user -> do
                     hashed <- hashPassword user.passwordHash
+                    userRole <- query @UserRole
+                        |> filterWhere (#name, "Editor")
+                        |> fetchOne
                     user <- user
                         |> set #passwordHash hashed
+                        |> set #userRoleId userRole.id
                         |> createRecord
                     setSuccessMessage "Te registraste exitosamente"
                     redirectTo NewSessionAction
