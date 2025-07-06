@@ -28,11 +28,16 @@ instance Controller JinglesController where
 
     action JinglesAction = do
         jingles <- query @Jingle |> fetch
-        role <- fetch currentUser.userRoleId
-        permissions <- query @UserPermission
+        case currentUserOrNothing of
+            Just currentUser -> do
+                role <- fetch currentUser.userRoleId
+                permissions <- query @UserPermission
                         |> filterWhere (#userRoleId, role.id)
                         |> fetch
-        render IndexView { .. }
+                render IndexView { .. }
+            Nothing -> do
+                let permissions = []
+                render IndexView { .. }
 
     action NewJingleAction = do
         ensureIsUser
@@ -91,11 +96,5 @@ buildJingle jingle = jingle
     |> validateField #link (nonEmpty |> withCustomErrorMessage "Campo obligatorio")
     |> validateField #nombreVideo (nonEmpty |> withCustomErrorMessage "Campo obligatorio")
 
-ensurePermission action = do
-    role <- fetch currentUser.userRoleId
-    permission <- query @UserPermission
-                        |> filterWhere (#userRoleId, role.id)
-                        |> filterWhere (#resource, "Jingles")
-                        |> filterWhere (#action, action)
-                        |> fetch
-    accessDeniedUnless (hasPermission permission)
+ensurePermission action = ensurePermissions action "Jingles"
+                        

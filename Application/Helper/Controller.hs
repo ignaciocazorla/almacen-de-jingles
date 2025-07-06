@@ -24,6 +24,15 @@ import Web.Types
 
 -- Here you can add functions which are available in all your controllers
 
+ensurePermissions action resource = do
+    role <- fetch currentUser.userRoleId
+    permission <- query @UserPermission
+                        |> filterWhere (#userRoleId, role.id)
+                        |> filterWhere (#resource, resource)
+                        |> filterWhere (#action, action)
+                        |> fetch
+    accessDeniedUnless (hasPermission permission)
+
 hasPermission :: [UserPermission] -> Bool
 hasPermission [] = False
 hasPermission permission = True

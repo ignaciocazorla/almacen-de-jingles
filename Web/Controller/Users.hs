@@ -118,11 +118,4 @@ validateUserFields passwordConfirmation user = user
     -- After this validation, since it's operation on the IO, we'll need to use >>=.
     |> validateIsUnique #email
 
-ensurePermission action = do
-    role <- fetch currentUser.userRoleId
-    permission <- query @UserPermission
-                        |> filterWhere (#userRoleId, role.id)
-                        |> filterWhere (#resource, "Users")
-                        |> filterWhere (#action, action)
-                        |> fetch
-    accessDeniedUnless (hasPermission permission)
+ensurePermission action = ensurePermissions action "Users"
