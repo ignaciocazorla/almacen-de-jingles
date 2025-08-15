@@ -23,6 +23,15 @@ import IHP.AuthSupport.View.Sessions.New
 instance View (NewView User) where
 
     html NewView { .. } = [hsx|
+        <script>
+            function handleCredentialResponse(response){
+                console.log(response);
+                var form = document.getElementById('new-session-with-google-form');
+                form.querySelector("input[name='jwt']").value = response.credential;
+                form.submit();
+            }
+        </script>
+
         <div class="h-100" id="sessions-new">
             <div class="d-flex align-items-center">
                 <div class="w-100">
@@ -30,6 +39,18 @@ instance View (NewView User) where
                         <h5>Login</h5>
                         {renderForm user}
                         <a href={pathTo NewUserAction} class="btn btn-primary btn-block">Registrarse</a>
+
+                        <script src="https://accounts.google.com/gsi/client" async defer></script>
+                        <div id="g_id_onload"
+                                data-client_id="1086644617391-t8ikttegtm5j73a0kop400redpt6eg2n.apps.googleusercontent.com"
+                                data-callback="handleCredentialResponse">
+                        </div>
+                        <div class="g_id_signin" data-type="standard">
+                            <button>Login with Google</button>
+                        </div>
+                        <form method="POST" action={CreateGoogleSessionAction} id="new-session-with-google-form">
+                                <input type="hidden" name="jwt" value=""/>
+                        </form>
                     </div>
                 </div>
             </div>

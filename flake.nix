@@ -28,6 +28,8 @@
                         base
                         wai
                         text
+                        jwt
+                        jose
 
                         # Uncomment on local development for testing
                         # hspec

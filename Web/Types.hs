@@ -25,6 +25,10 @@ import Generated.Types
 
 data WebApplication = WebApplication deriving (Eq, Show)
 
+data GoogleSessionsController
+    = CreateGoogleSessionAction
+    deriving (Eq, Show, Data)
+
 data SessionsController
     = NewSessionAction
     | CreateSessionAction

@@ -25,4 +25,5 @@ import Web.Types
 instance AutoRoute SessionsController
 instance AutoRoute JinglesController
 instance AutoRoute UsersController
+instance AutoRoute GoogleSessionsController
 
