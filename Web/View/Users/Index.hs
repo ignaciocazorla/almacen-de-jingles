@@ -18,6 +18,7 @@ You may read the full license at https://github.com/ignaciocazorla/almacen-de-ji
 
 module Web.View.Users.Index where
 import Web.View.Prelude
+import Data.Aeson
 
 data IndexView = IndexView { users :: [User] }
 
@@ -50,7 +51,19 @@ instance View IndexView where
             breadcrumb = renderBreadcrumb
                 [ breadcrumbLink "Usuarios" UsersAction
                 ]
-                
+    json IndexView { .. } = toJSON users
+
+instance ToJSON User where
+    toJSON user = object
+        [ "id" .= user.id
+        , "email" .= user.email
+        , "password_hash" .= user.passwordHash
+        , "locked_at" .= user.lockedAt
+        , "failed_login_attempts" .= user.failedLoginAttempts
+        , "name" .= user.name
+        , "last_name" .= user.lastName
+        , "user_role_id" .= user.userRoleId
+        ]                
 
 renderUser :: User -> Html
 renderUser user = [hsx|

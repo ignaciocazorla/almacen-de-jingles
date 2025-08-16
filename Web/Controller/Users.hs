@@ -23,6 +23,7 @@ import Web.View.Users.New
 import Web.View.Users.Edit
 import Web.View.Users.Index
 import Web.View.Users.AddUser
+import Web.View.Users.Show
 
 instance Controller UsersController where
     action UsersAction = do
@@ -30,10 +31,16 @@ instance Controller UsersController where
         users <- query @User |> fetch
         render IndexView { .. }
 
+    action ShowUserAction { userId } = do
+        user <- fetch userId
+        render ShowView { .. }
+
+    -- Registratiom form
     action NewUserAction = do
         let user = newRecord
         render NewView { .. }
 
+    -- Manual admin add form
     action AddNewUserAction = do
         ensurePermission "Create"
         let user = newRecord
@@ -60,6 +67,7 @@ instance Controller UsersController where
                     setSuccessMessage "Usuario actualizado"
                     redirectTo EditUserAction { .. }
 
+    -- Manual admin add
     action AddUserAction = do
         let user = newRecord @User
         -- The value from the password confirmation input field.
@@ -77,6 +85,7 @@ instance Controller UsersController where
                     setSuccessMessage "Registraste un usuario exitosamente"
                     redirectTo UsersAction
 
+    -- Registration
     action CreateUserAction = do
         let user = newRecord @User
         -- The value from the password confirmation input field.

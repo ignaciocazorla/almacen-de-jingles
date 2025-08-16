@@ -13,11 +13,12 @@ You may read the full license at https://github.com/ignaciocazorla/almacen-de-ji
 {-
 @author Ignacio Cazorla <cazorla.ignacio@hotmail.com>
 @original_idea Pablo E. --Fidel-- Martínez López <fidel.ml@gmail.com> 
-@module Web.View.Jingles/Show
+@module Web.View.Jingles.Show
 -}
 
 module Web.View.Jingles.Show where
 import Web.View.Prelude
+import Data.Aeson
 
 data ShowView = ShowView { jingle :: Jingle }
 
@@ -46,3 +47,17 @@ instance View ShowView where
                             [ breadcrumbLink "Jingles" JinglesAction
                             , breadcrumbText "Detalle del Jingle"
                             ]
+    json ShowView { .. } = toJSON jingle
+
+instance ToJSON Jingle where
+    toJSON jingle = object
+        [ "id" .= jingle.id
+        , "nombre" .= jingle.nombre
+        , "fecha" .= jingle.fecha
+        , "enlace" .= jingle.link
+        , "tiempo_inicio" .= jingle.tiempoInicio
+        , "nombre_video" .= jingle.nombreVideo
+        , "banda_original" .= jingle.bandaOriginal
+        , "creado_por" .= jingle.creadoPor
+        , "user_id" .= jingle.userId
+        ]

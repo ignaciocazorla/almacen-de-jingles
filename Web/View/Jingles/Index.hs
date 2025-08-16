@@ -60,6 +60,22 @@ instance View IndexView where
                             [hsx| <a href={pathTo NewJingleAction} class="btn btn-primary ms-4">+ Nuevo</a> |]
                     Nothing -> [hsx||]
 
+    json IndexView { .. } = toJSON jingles
+
+instance ToJSON Jingle where
+    toJSON jingle = object
+        [ "id" .= jingle.id
+        , "nombre" .= jingle.nombre
+        , "fecha" .= jingle.fecha
+        , "enlace" .= jingle.link
+        , "tiempo_inicio" .= jingle.tiempoInicio
+        , "nombre_video" .= jingle.nombreVideo
+        , "banda_original" .= jingle.bandaOriginal
+        , "creado_por" .= jingle.creadoPor
+        , "user_id" .= jingle.userId
+        ]
+
+
 renderJingle :: [UserPermission] -> Jingle -> Html
 renderJingle permissions jingle = [hsx|
     <tr>
