@@ -46,6 +46,7 @@ data UsersController
     | NewUserAction
     | AddUserAction
     | CreateUserAction
+    | ShowUserAction { userId :: !(Id User) }
     | EditUserAction { userId :: !(Id User) }
     | UpdateUserAction { userId :: !(Id User) }
     | DeleteUserAction { userId :: !(Id User) }
