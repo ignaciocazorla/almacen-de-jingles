@@ -13,16 +13,25 @@ You may read the full license at https://github.com/ignaciocazorla/almacen-de-ji
 {-
 @author Ignacio Cazorla <cazorla.ignacio@hotmail.com>
 @original_idea Pablo E. --Fidel-- Martínez López <fidel.ml@gmail.com> 
-@module Web.Routes
+@module Web.Controller.UserRoles
 -}
 
-module Web.Routes where
-import IHP.RouterPrelude
-import Generated.Types
-import Web.Types
 
--- Generator Marker
-instance AutoRoute SessionsController
-instance AutoRoute JinglesController
-instance AutoRoute UsersController
-instance AutoRoute UserRolesController
+module Web.Controller.UserRoles where
+
+import Web.Controller.Prelude
+import Web.View.UserRoles.Index
+import Web.View.UserRoles.Show
+
+instance Controller UserRolesController where
+    action UserRolesAction = do
+        userRoles <- query @UserRole |> fetch
+        render IndexView { .. }
+
+    action ShowUserRoleAndPermissionsAction { userRoleId } = do
+        userRole <- fetch userRoleId
+        userPermissions <- query @UserPermission 
+            |> filterWhere (#userRoleId, userRoleId)
+            |> fetch
+        render ShowView { .. }
+

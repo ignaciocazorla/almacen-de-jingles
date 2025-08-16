@@ -58,6 +58,9 @@ run = do
     createPermission adminRole.id "Users" "List"
     createPermission adminRole.id "Users" "Read"
 
+    -- UserRoles resource
+    createPermission adminRole.id "UserRoles" "List"
+
     -- Editor permissions
     -- Jingles resource
     createPermission editorRole.id "Jingles" "Edit"

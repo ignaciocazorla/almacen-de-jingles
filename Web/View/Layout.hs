@@ -82,6 +82,7 @@ navbar = [hsx|
         <ul class="nav-list">
             <li><a href={JinglesAction} class="nav-link">Jingles</a></li>
             {usersItem}
+            {userRolesItem}
             <li class="nav-user nav-right">
                 <span>Hola {currentUser.email}</span>
                 <a class="js-delete js-delete-no-confirm btn btn-primary ms-4 logout-btn" href={DeleteSessionAction}>Logout</a> 
@@ -95,6 +96,10 @@ navbar = [hsx|
 usersItem :: Html
 usersItem = hasRolePermissions permissions "Users" "List"
             [hsx| <li><a href={UsersAction} class="nav-link">Usuarios</a></li> |]
+
+userRolesItem :: Html
+userRolesItem = hasRolePermissions permissions "UserRoles" "List"
+            [hsx| <li><a href={UserRolesAction} class="nav-link">Roles</a></li> |]
 
 permissions :: (?context :: ControllerContext) => [UserPermission]
 permissions = fromFrozenContext
