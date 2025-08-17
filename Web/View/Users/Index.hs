@@ -29,17 +29,17 @@ instance View IndexView where
     html IndexView { .. } = [hsx|
         {breadcrumb}
 
+        <script src="/js/sortTable.js"></script>
+        <link rel="stylesheet" href="/css/tableSort.css"/>
+
         <h1>Usuarios <a href={pathTo AddNewUserAction} class="btn btn-primary ms-4">+ Nuevo</a> </h1>
         <div class="table-responsive">
-            <table class="table">
+            <table id="users-table" class="table" data-sortable="true">
                 <thead>
                     <tr>
-                        <th>Email</th>
+                        <th class="headerSortDown" data-order="desc">Email</th>
                         <th>Nombre</th>
                         <th>Apellido</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>{forEach users renderUser}</tbody>

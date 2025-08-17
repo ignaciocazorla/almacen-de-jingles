@@ -30,18 +30,18 @@ instance View IndexView where
         {breadcrumb}
 
         <script src="/js/sortTable.js"></script>
-        <link rel="stylesheet" href="/css/jinglesTable.css"/>
+        <link rel="stylesheet" href="/css/tableSort.css"/>
 
         <h1>Listado de Jingles {renderNewJingleButton}</h1>
         <div class="table-responsive">
-            <table id="jingles-table" class="table">
+            <table id="jingles-table" class="table" data-sortable="true">
                 <thead>
                     <tr>
-                        <th onclick="updateTable(0)" class="headerSortDown" data-order="desc">Jingle</th>
-                        <th onclick="updateTable(1)">Video</th>
-                        <th onclick="updateTable(2)">Fecha</th>
-                        <th onclick="updateTable(3)">Artista Original</th>
-                        <th onclick="updateTable(4)">Interprete</th>
+                        <th class="headerSortDown" data-order="desc">Jingle</th>
+                        <th>Video</th>
+                        <th>Fecha</th>
+                        <th>Artista Original</th>
+                        <th>Interprete</th>
                     </tr>
                 </thead>
                 <tbody>{forEach jingles (renderJingle permissions) }</tbody>

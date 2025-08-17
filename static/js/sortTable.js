@@ -1,7 +1,19 @@
 const headerSortDownClass = "headerSortDown";
 const headerSortUpClass = "headerSortUp";
-const tableName = "jingles-table";
 const orderAttribute = "data-order";
+
+document.addEventListener("DOMContentLoaded", () => {
+    const tables = document.querySelectorAll("table[data-sortable]");
+
+    tables.forEach(table => {
+        const headers = table.querySelectorAll("th");
+        headers.forEach((header, index) => {
+            header.addEventListener("click", () => {
+                updateTable(index, table.id);
+            });
+        });
+    });
+});
 
 const isNumber = (x,y) => !isNaN(x) && !isNaN(y);
 
@@ -35,7 +47,7 @@ const boolOrderToString = order => order ? "asc" : "desc";
 
 const boolOrderToClass = order => order ? headerSortUpClass : headerSortDownClass;
 
-function updateTable(columnIndex) {
+function updateTable(columnIndex, tableName) {
     const table = document.getElementById(tableName);
     const headers = Array.from(table.rows[0].cells);
     const elem = headers.find(each => each.hasAttribute(orderAttribute));
