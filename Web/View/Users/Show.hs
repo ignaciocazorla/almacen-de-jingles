@@ -26,6 +26,9 @@ instance View ShowView where
     beforeRender view = do
         setLayout loggedInLayout
 
+    html ShowView { .. } = [hsx|
+        |]
+
     json ShowView { .. } = toJSON user
 
 instance ToJSON User where

@@ -57,8 +57,8 @@ instance HasNewSessionUrl User where
     newSessionUrl _ = "/NewSession"
 
 type instance CurrentUserRecord = User
+
 data UserRolesController
     = UserRolesAction
-    | ShowUserRoleAction { userRoleId :: !(Id UserRole) }
     | ShowUserRoleAndPermissionsAction { userRoleId :: !(Id UserRole) }
     deriving (Eq, Show, Data)
