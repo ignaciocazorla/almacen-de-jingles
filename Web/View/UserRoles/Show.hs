@@ -23,6 +23,32 @@ import Data.Aeson
 data ShowView = ShowView { userRole :: UserRole, userPermissions :: [UserPermission] }
 
 instance View ShowView where
+    beforeRender view = do
+        setLayout loggedInLayout
+        
+    html ShowView { .. } = [hsx|
+        {breadcrumb}
+
+        <h1>Roles de usuario</h1>
+        <div class="table-responsive">
+            <table id="roles-permissions-table" class="table">
+                <thead>
+                    <tr>
+                        <th>Rol</th>
+                        <th>Permisos</th>
+                    </tr>
+                </thead>
+                <tbody>{ renderRoleAndPermissions userRole userPermissions }</tbody>
+            </table>
+            
+        </div>
+    |]
+        where
+            breadcrumb = renderBreadcrumb
+                [ breadcrumbLink "Roles de usuario" UserRolesAction
+                , breadcrumbText "Permisos del Rol"
+                ]
+
     json ShowView { userRole, userPermissions } =
         object
             [ "id" .= userRole.id
@@ -42,3 +68,28 @@ instance ToJSON UserPermission where
         , "resource" .= userPermission.resource
         , "action" .= userPermission.action
         ]
+
+renderRoleAndPermissions :: UserRole -> [ UserPermission ] -> Html
+renderRoleAndPermissions userRole userPermissions = [hsx|
+    <tr>
+        <td>
+            <b>{userRole.name}</b>
+        </td>
+        <td>
+            <b>Recurso</b>
+        </td>
+        <td>
+            <b>Accion</b>
+        </td>
+    </tr>
+    {forEach userPermissions renderPermission}
+    |]
+
+renderPermission :: UserPermission -> Html
+renderPermission permission = [hsx|
+        <tr>
+            <td></td>
+            <td>{permission.resource}</td>
+            <td>{permission.action}</td>
+        </tr>
+    |]

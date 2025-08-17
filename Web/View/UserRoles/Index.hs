@@ -60,7 +60,6 @@ renderUserRole :: UserRole -> Html
 renderUserRole userRole = [hsx|
     <tr>
         <td>{userRole.name}</td>
-        <!-- <td><a href={EditUserRoleAction userRole.id} class="text-muted">Editar</a></td>
-        <td><a href={DeleteUserRoleAction userRole.id} class="js-delete text-muted">Borrar</a></td> -->
+        <td><a href={ShowUserRoleAndPermissionsAction userRole.id} class="text-muted">Ver permisos</a></td>
     </tr>
 |]

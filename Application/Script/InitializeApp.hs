@@ -39,7 +39,7 @@ run = do
     editorRole <- newRecord @UserRole
                 |> set #name "Editor"
                 |> createRecord
-    editorRole <- newRecord @UserRole
+    readerRole <- newRecord @UserRole
                 |> set #name "Reader"
                 |> createRecord
 
@@ -67,6 +67,10 @@ run = do
     createPermission editorRole.id "Jingles" "Delete"
     createPermission editorRole.id "Jingles" "List"
     createPermission editorRole.id "Jingles" "Read"
+
+    -- Reader permissions
+    -- Jingles resource
+    createPermission readerRole.id "Jingles" "Read"
 
     let (AdminEmail email) = getAppConfig @Config.AdminEmail
     let (AdminPass pass) = getAppConfig @Config.AdminPass

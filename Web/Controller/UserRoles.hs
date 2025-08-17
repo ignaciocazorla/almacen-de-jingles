@@ -25,13 +25,18 @@ import Web.View.UserRoles.Show
 
 instance Controller UserRolesController where
     action UserRolesAction = do
+        ensureIsUser
+        ensurePermission "List"
         userRoles <- query @UserRole |> fetch
         render IndexView { .. }
 
     action ShowUserRoleAndPermissionsAction { userRoleId } = do
+        ensureIsUser
+        ensurePermission "List"
         userRole <- fetch userRoleId
         userPermissions <- query @UserPermission 
             |> filterWhere (#userRoleId, userRoleId)
             |> fetch
         render ShowView { .. }
 
+ensurePermission action = ensurePermissions action "UserRoles"

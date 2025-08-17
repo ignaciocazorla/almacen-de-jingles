@@ -18,6 +18,7 @@ You may read the full license at https://github.com/ignaciocazorla/almacen-de-ji
 
 module Web.View.Jingles.Edit where
 import Web.View.Prelude
+import Data.Aeson
 
 data EditView = EditView { jingle :: Jingle }
 
@@ -35,6 +36,21 @@ instance View EditView where
                 [ breadcrumbLink "Jingles" JinglesAction
                 , breadcrumbText "Editar Jingle"
                 ]
+    
+    json EditView { .. } = toJSON jingle
+
+instance ToJSON Jingle where
+    toJSON jingle = object
+        [ "id" .= jingle.id
+        , "nombre" .= jingle.nombre
+        , "fecha" .= jingle.fecha
+        , "enlace" .= jingle.link
+        , "tiempo_inicio" .= jingle.tiempoInicio
+        , "nombre_video" .= jingle.nombreVideo
+        , "banda_original" .= jingle.bandaOriginal
+        , "creado_por" .= jingle.creadoPor
+        , "user_id" .= jingle.userId
+        ]
 
 renderForm :: Jingle -> Html
 renderForm jingle = formFor jingle [hsx|
@@ -46,5 +62,4 @@ renderForm jingle = formFor jingle [hsx|
     {(textField #bandaOriginal)}
     {(textField #creadoPor)}
     {submitButton {label = "Guardar cambios"}}
-
 |]
