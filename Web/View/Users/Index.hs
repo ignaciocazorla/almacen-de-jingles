@@ -20,7 +20,7 @@ module Web.View.Users.Index where
 import Web.View.Prelude
 import Data.Aeson
 
-data IndexView = IndexView { users :: [User] }
+data IndexView = IndexView { users :: [User], roles :: [UserRole] }
 
 instance View IndexView where
     beforeRender view = do
@@ -30,9 +30,34 @@ instance View IndexView where
         {breadcrumb}
 
         <script src="/js/sortTable.js"></script>
+        <script src="/js/filterMenu.js"></script>
         <link rel="stylesheet" href="/css/tableSort.css"/>
+        <link rel="stylesheet" href="/css/nameFilter.css"/>
 
         <h1>Usuarios <a href={pathTo AddNewUserAction} class="btn btn-primary ms-4">+ Nuevo</a> </h1>
+
+        <div class="filter-menu">
+            <h3>Filtros</h3>
+            <ul class="horizontal-menu">
+                <li><b>Rol</b></li>
+                <li>
+                    <select>
+                        <option value="-">-</option>
+                        {forEach roles renderRoles}
+                    </select>
+                </li>
+            </ul> 
+        
+            <ul class="horizontal-menu name-filter">
+                <li><b>Nombre</b></li>
+                {forEach listItems renderListItem}
+            </ul>
+            <ul class="horizontal-menu lastname-filter">
+                <li><b>Apellido</b></li>
+                {forEach listItems renderListItem}
+            </ul>
+        </div>
+
         <div class="table-responsive">
             <table id="users-table" class="table" data-sortable="true">
                 <thead>
@@ -40,9 +65,15 @@ instance View IndexView where
                         <th class="headerSortDown" data-order="desc">Email</th>
                         <th>Nombre</th>
                         <th>Apellido</th>
+                        <th>Rol</th>
                     </tr>
                 </thead>
-                <tbody>{forEach users renderUser}</tbody>
+                <tbody>
+                    {forEach users (renderUser roles)}
+                    <tr id="no-results" style="display:none;">
+                        <td colspan="6" class="text-center text-muted">No hay usuarios para mostrar</td>
+                    </tr>
+                </tbody>
             </table>
             
         </div>
@@ -65,13 +96,34 @@ instance ToJSON User where
         , "user_role_id" .= user.userRoleId
         ]                
 
-renderUser :: User -> Html
-renderUser user = [hsx|
+renderUser :: [UserRole] -> User ->  Html
+renderUser roles user = [hsx|
     <tr>
         <td>{user.email}</td>
         <td>{user.name}</td>
         <td>{user.lastName}</td>
+        {renderRoleForUser user roles}
         <td><a href={EditUserAction user.id} class="text-muted">Editar</a></td>
         <td><a href={DeleteUserAction user.id} class="js-delete text-muted">Borrar</a></td>
     </tr>
 |]
+
+renderListItem :: Text -> Html
+renderListItem char = [hsx|
+    <li><a href="">{char}</a></li>
+|]
+
+listItems :: [Text]
+listItems = ["Todos","A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+
+renderRoles :: UserRole -> Html
+renderRoles role = [hsx|
+    <option value={role.name}>{role.name}</option>
+|]
+
+renderRoleForUser :: User -> [UserRole] -> Html
+renderRoleForUser user roles =
+    case find (\r -> r.id == user.userRoleId) roles of
+        Just role -> [hsx|<td>{role.name}</td>|]
+        Nothing   -> [hsx|<td>"-"</td>|]
+

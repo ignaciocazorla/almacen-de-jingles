@@ -1,0 +1,25 @@
+.filter-menu{
+    background-color: lightgrey;
+}
+
+.horizontal-menu {
+        list-style: none; 
+        padding: 0; 
+        margin: 0; 
+    }
+
+.horizontal-menu li {
+    display: inline-block; /* Makes list items display horizontally */
+    margin-right: 10px;
+}
+
+.filter-menu .horizontal-menu a:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.filter-menu .horizontal-menu a.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #0056b3;
+}

@@ -29,6 +29,7 @@ instance Controller UsersController where
     action UsersAction = do
         ensurePermission "List"
         users <- query @User |> fetch
+        roles <- query @UserRole |> fetch
         render IndexView { .. }
 
     action ShowUserAction { userId } = do
@@ -106,7 +107,6 @@ instance Controller UsersController where
                         |> createRecord
                     setSuccessMessage "Te registraste exitosamente"
                     redirectTo NewSessionAction
-
 
     action DeleteUserAction { userId } = do
         ensurePermission "List"
