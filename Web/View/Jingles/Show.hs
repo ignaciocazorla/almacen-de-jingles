@@ -29,16 +29,49 @@ instance View ShowView where
     html ShowView { .. } = [hsx|
         {breadcrumb}
         <h1>{jingle.nombre}</h1>
-        <div>
-            <ul class="jingle-list">
-                <li><strong>Nombre del Jingle:</strong> {jingle.nombre}</li>
-                <li><strong>Enlace:</strong> <a href={jingle.link} target="_blank">{jingle.link}</a></li>
-                <li><strong>Fecha de salida:</strong> {jingle.fecha}</li>
-                <li><strong>Tiempo dentro del video:</strong> {jingle.tiempoInicio}</li>
-                <li><strong>Nombre del video:</strong> {jingle.nombreVideo}</li>
-                <li><strong>Banda original:</strong> {jingle.bandaOriginal}</li>
-                <li><strong>Artista creador:</strong> {jingle.creadoPor}</li>
-            </ul>
+        <div class="table-responsive">
+            <table id="jingle-show" class="table">
+                <thead>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Jingle:</strong></td>
+                        <td>{jingle.nombre}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Autor:</strong></td>
+                        <td>{jingle.autor}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fecha de salida:</strong></td>
+                        <td>{jingle.fecha}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tema original:</strong></td>
+                        <td>{jingle.temaOriginal}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Banda original:</strong></td>
+                        <td>{jingle.bandaOriginal}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nombre del video:</strong></td>
+                        <td>{jingle.nombreVideo}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Enlace:</strong></td>
+                        <td><a href={jingle.link} target="_blank">{jingle.link}</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tiempo dentro del video:</strong></td>
+                        <td>{jingle.tiempoInicio}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Comentario:</strong></td>
+                        <td>{jingle.comentario}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div> 
 
     |]
@@ -58,6 +91,8 @@ instance ToJSON Jingle where
         , "tiempo_inicio" .= jingle.tiempoInicio
         , "nombre_video" .= jingle.nombreVideo
         , "banda_original" .= jingle.bandaOriginal
-        , "creado_por" .= jingle.creadoPor
+        , "autor" .= jingle.autor
         , "user_id" .= jingle.userId
+        , "tema_original" .= jingle.temaOriginal
+        , "comentario" .= jingle.comentario
         ]

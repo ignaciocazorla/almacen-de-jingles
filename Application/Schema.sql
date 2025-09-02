@@ -7,8 +7,10 @@ CREATE TABLE jingles (
     tiempo_inicio TEXT DEFAULT NULL,
     nombre_video TEXT NOT NULL,
     banda_original TEXT DEFAULT NULL,
-    creado_por TEXT DEFAULT NULL,
-    user_id UUID NOT NULL
+    autor TEXT DEFAULT NULL,
+    user_id UUID NOT NULL,
+    tema_original TEXT DEFAULT NULL,
+    comentario TEXT DEFAULT NULL
 );
 CREATE TABLE users (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,

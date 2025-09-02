@@ -48,18 +48,21 @@ instance ToJSON Jingle where
         , "tiempo_inicio" .= jingle.tiempoInicio
         , "nombre_video" .= jingle.nombreVideo
         , "banda_original" .= jingle.bandaOriginal
-        , "creado_por" .= jingle.creadoPor
+        , "autor" .= jingle.autor
         , "user_id" .= jingle.userId
         ]
 
 renderForm :: Jingle -> Html
 renderForm jingle = formFor jingle [hsx|
     {(textField #nombre)}
-    {(dateField #fecha) {helpText = "Debe usar formato año-mes-día"}}
+    {(textField #autor)}
+    {(dateField #fecha) {helpText = "Debe usar formato año-mes-día"}} 
+    {(textField #temaOriginal)}
+    {(textField #bandaOriginal)}
+    {(textField #nombreVideo)}
     {(urlField #link)}
     {(textField #tiempoInicio)}
-    {(textField #nombreVideo)}
-    {(textField #bandaOriginal)}
-    {(textField #creadoPor)}
+    {(textareaField #comentario)}
     {submitButton {label = "Guardar cambios"}}
+
 |]

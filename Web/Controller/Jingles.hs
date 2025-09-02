@@ -91,7 +91,7 @@ instance Controller JinglesController where
         redirectTo JinglesAction
 
 buildJingle jingle = jingle
-    |> fill @'["nombre", "fecha", "link", "tiempoInicio", "nombreVideo", "bandaOriginal", "creadoPor", "userId"]
+    |> fill @'["nombre", "fecha", "link", "tiempoInicio", "nombreVideo", "bandaOriginal", "autor", "userId", "temaOriginal", "comentario"]
     |> validateField #nombre (nonEmpty |> withCustomErrorMessage "Campo obligatorio")
     |> validateField #link (nonEmpty |> withCustomErrorMessage "Campo obligatorio")
     |> validateField #nombreVideo (nonEmpty |> withCustomErrorMessage "Campo obligatorio")

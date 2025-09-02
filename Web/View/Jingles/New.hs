@@ -39,12 +39,14 @@ instance View NewView where
 renderForm :: Jingle -> Html
 renderForm jingle = formFor jingle [hsx|
     {(textField #nombre)}
+    {(textField #autor)}
     {(dateField #fecha) {helpText = "Debe usar formato año-mes-día"}} 
+    {(textField #temaOriginal)}
+    {(textField #bandaOriginal)}
+    {(textField #nombreVideo)}
     {(urlField #link)}
     {(textField #tiempoInicio)}
-    {(textField #nombreVideo)}
-    {(textField #bandaOriginal)}
-    {(textField #creadoPor)}
+    {(textareaField #comentario)}
     {submitButton {label = "Crear Jingle"}}
 
 |]

@@ -40,8 +40,9 @@ instance View IndexView where
                         <th class="headerSortDown" data-order="desc">Jingle</th>
                         <th>Video</th>
                         <th>Fecha</th>
-                        <th>Artista Original</th>
-                        <th>Interprete</th>
+                        <th>Autor</th>
+                        <th>Banda Original</th>
+                        <th>Tema Original</th>
                     </tr>
                 </thead>
                 <tbody>{forEach jingles (renderJingle permissions) }</tbody>
@@ -71,7 +72,7 @@ instance ToJSON Jingle where
         , "tiempo_inicio" .= jingle.tiempoInicio
         , "nombre_video" .= jingle.nombreVideo
         , "banda_original" .= jingle.bandaOriginal
-        , "creado_por" .= jingle.creadoPor
+        , "autor" .= jingle.autor
         , "user_id" .= jingle.userId
         ]
 
@@ -82,8 +83,9 @@ renderJingle permissions jingle = [hsx|
         <td><a href={ShowJingleAction jingle.id}>{jingle.nombre}</a></td>
         <td><a href={jingle.link} target="_blank">{jingle.nombreVideo}</a></td>
         <td>{jingle.fecha}</td>
+        <td>{jingle.autor}</td>
         <td>{jingle.bandaOriginal}</td>
-        <td>{jingle.creadoPor}</td>
+        <td>{jingle.temaOriginal}</td>
         {renderEditButton}
         {renderDeleteButton}
     </tr>
