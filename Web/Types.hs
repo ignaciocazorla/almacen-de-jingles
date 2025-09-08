@@ -39,6 +39,8 @@ data JinglesController
     | EditJingleAction { jingleId :: !(Id Jingle) }
     | UpdateJingleAction { jingleId :: !(Id Jingle) }
     | DeleteJingleAction { jingleId :: !(Id Jingle) }
+    | SearchByFieldAction
+    | SearchByDateAction
     deriving (Eq, Show, Data)
 
 data UsersController

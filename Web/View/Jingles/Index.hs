@@ -27,12 +27,31 @@ instance View IndexView where
         setLayout loggedInLayout
         
     html IndexView { .. } = [hsx|
+        
         {breadcrumb}
 
         <script src="/js/sortTable.js"></script>
+        <script src="/js/filterJingles.js"></script>
         <link rel="stylesheet" href="/css/tableSort.css"/>
 
         <h1>Listado de Jingles {renderNewJingleButton}</h1>
+        <div>
+            <h3>Filtrar Jingles</h3>
+            <form action="/SearchByField">
+                <select id="search" name="selectedField">
+                    <option value="">Seleccionar campo</option>
+                    {forEach selectFields renderSelectField}
+                </select>
+                <input type="text" name="search">
+
+                <div id="dateInputs" style="display:none">
+                    <input type="date" name="fecha_desde" placeholder="Desde">
+                    <input type="date" name="fecha_hasta" placeholder="Hasta">
+                </div>
+                <button type="submit">Buscar</button>
+            </form>
+        </div>
+
         <div class="table-responsive">
             <table id="jingles-table" class="table" data-sortable="true">
                 <thead>
@@ -104,3 +123,11 @@ renderJingle permissions jingle = [hsx|
                         hasRolePermissions permissions "Jingles" "Delete"
                             [hsx| <td><a href={DeleteJingleAction jingle.id} class="js-delete text-muted">Borrar</a></td> |]
                     Nothing -> [hsx||]
+
+selectFields :: [Text]
+selectFields = ["nombre","fecha", "nombreVideo", "bandaOriginal", "autor", "temaOriginal"]
+
+renderSelectField :: Text -> Html
+renderSelectField selectField = [hsx|
+        <option value={selectField}>{selectField}</option>
+    |]
