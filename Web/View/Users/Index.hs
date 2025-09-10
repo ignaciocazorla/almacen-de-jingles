@@ -72,6 +72,10 @@ instance View IndexView where
                     {forEach users (renderUser roles)}
                     <tr id="no-results" style="display:none;">
                         <td colspan="6" class="text-center text-muted">No hay usuarios para mostrar</td>
+                        <td style="display:none;"></td>
+                        <td style="display:none;"></td>
+                        <td style="display:none;"></td>
+                        <td style="display:none;"></td>
                     </tr>
                 </tbody>
             </table>

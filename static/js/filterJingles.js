@@ -18,7 +18,7 @@ You may read the full license at https://github.com/ignaciocazorla/almacen-de-ji
 
 document.addEventListener("DOMContentLoaded", () => {
     const select = document.getElementById("search");
-    const form = select.closest("form");
+    const form = document.getElementById("jingles-filter-form");
     const textInput = form.querySelector('input[name="search"]');
     const inputContainer = document.getElementById("dateInputs")
 

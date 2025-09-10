@@ -16,12 +16,15 @@ You may read the full license at https://github.com/ignaciocazorla/almacen-de-ji
 @file static/js/sortTable.js
 */
 
-
 const headerSortDownClass = "headerSortDown";
 const headerSortUpClass = "headerSortUp";
 const orderAttribute = "data-order";
 
 document.addEventListener("DOMContentLoaded", () => {
+    setupSortTable();
+});
+
+const setupSortTable = () => {
     const tables = document.querySelectorAll("table[data-sortable]");
 
     tables.forEach(table => {
@@ -32,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     });
-});
+}
 
 const isNumber = (x,y) => !isNaN(x) && !isNaN(y);
 

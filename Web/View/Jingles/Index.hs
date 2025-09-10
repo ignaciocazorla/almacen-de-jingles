@@ -37,7 +37,7 @@ instance View IndexView where
         <h1>Listado de Jingles {renderNewJingleButton}</h1>
         <div>
             <h3>Filtrar Jingles</h3>
-            <form action="/SearchByField">
+            <form id="jingles-filter-form" action="/SearchByField">
                 <select id="search" name="selectedField">
                     <option value="">Seleccionar campo</option>
                     {forEach selectFields renderSelectField}
