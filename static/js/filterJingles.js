@@ -52,6 +52,6 @@ const setupJinglesFilter = () => {
 }
 
 const tableIsEmpty = () => {
-    let empty = rows.every(elem => elem.style.display.toString() == "none");
+    let empty = rows.length == 0;
     noResultsRow.style.display = empty ? "" : "none";
 }

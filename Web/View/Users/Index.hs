@@ -82,7 +82,6 @@ instance View IndexView where
                         <td style="display:none;"></td>
                         <td style="display:none;"></td>
                         <td style="display:none;"></td>
-                        <td style="display:none;"></td>
                     </tr>
                 </tbody>
             </table>

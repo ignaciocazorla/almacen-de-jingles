@@ -42,6 +42,9 @@ run = do
     readerRole <- newRecord @UserRole
                 |> set #name "Reader"
                 |> createRecord
+    chiefReaderRole <- newRecord @UserRole
+                |> set #name "ChiefEditor"
+                |> createRecord
 
     -- Admin permissions
     -- Jingles resource
@@ -61,10 +64,16 @@ run = do
     -- UserRoles resource
     createPermission adminRole.id "UserRoles" "List"
 
-    -- Editor permissions
+    -- ChiefEditor permissions
     -- Jingles resource
     createPermission editorRole.id "Jingles" "Edit"
     createPermission editorRole.id "Jingles" "Delete"
+    createPermission editorRole.id "Jingles" "List"
+    createPermission editorRole.id "Jingles" "Read"
+
+    -- Editor permissions
+    -- Jingles resource
+    createPermission editorRole.id "Jingles" "Edit"
     createPermission editorRole.id "Jingles" "List"
     createPermission editorRole.id "Jingles" "Read"
 

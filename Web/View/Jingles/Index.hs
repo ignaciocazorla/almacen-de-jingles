@@ -34,6 +34,14 @@ instance View IndexView where
         <script src="/js/filterJingles.js"></script>
         <link rel="stylesheet" href="/css/tableSort.css"/>
 
+        <script>
+        // Function to overwrite IHP helpers.js default behavior
+        function submit() {
+            const form = document.getElementById("jingles-filter-form");
+            window.submitForm(form);
+        }
+        </script>
+
         <h1>Listado de Jingles {renderNewJingleButton}</h1>
         <div>
             <h3>Filtrar Jingles</h3>
@@ -48,7 +56,7 @@ instance View IndexView where
                     <input type="date" name="fecha_desde" placeholder="Desde">
                     <input type="date" name="fecha_hasta" placeholder="Hasta">
                 </div>
-                <button type="submit">Buscar</button>
+                <button type="submit" onclick="submit()">Buscar</button>
             </form>
         </div>
 
@@ -68,8 +76,6 @@ instance View IndexView where
                     { forEach jingles (renderJingle permissions) }
                     <tr id="no-results" style="display:none;">
                         <td colspan="6" class="text-center text-muted">No hay jingles para mostrar</td>
-                        <td style="display:none;"></td>
-                        <td style="display:none;"></td>
                         <td style="display:none;"></td>
                         <td style="display:none;"></td>
                         <td style="display:none;"></td>
