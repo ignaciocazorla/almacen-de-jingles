@@ -19,44 +19,24 @@ You may read the full license at https://github.com/ignaciocazorla/almacen-de-ji
 document.addEventListener("DOMContentLoaded", () => {
     const table = document.getElementById("users-table");
     const rows = Array.from(table.querySelectorAll("tbody tr:not(#no-results)"));
+    const form = document.getElementById("users-filter-form");
 
     const roleSelect = document.querySelector(".filter-menu select");
     const nameLinks = document.querySelectorAll(".filter-menu ul:nth-of-type(2) a");
     const lastNameLinks = document.querySelectorAll(".filter-menu ul:nth-of-type(3) a");
     const noResultsRow = document.getElementById("no-results");
 
-    let activeNameFilter = "Todos";
-    let activeLastNameFilter = "Todos";
+    const nameInput = form.querySelector('input[name="name-filter"]');
+    const lastNameInput = form.querySelector('input[name="lastname-filter"]');
+
+    let activeNameFilter = nameInput.value;
+    let activeLastNameFilter = lastNameInput.value;
     let activeRoleFilter = "-";
 
-    function applyFilters() {
-        rows.forEach(row => {
-            const nombre = row.cells[1].textContent.trim();
-            const apellido = row.cells[2].textContent.trim();
-            const roles = row.cells[3].textContent.trim();
-
-            let show = true;
-
-            // role filter
-            if (activeRoleFilter !== "-" && !roles.includes(activeRoleFilter)) {
-                show = false;
-            }
-
-            // name filter (first letter)
-            if (activeNameFilter !== "Todos" && !nombre.startsWith(activeNameFilter)) {
-                show = false;
-            }
-
-            // last-name filter (first letter)
-            if (activeLastNameFilter !== "Todos" && !apellido.startsWith(activeLastNameFilter)) {
-                show = false;
-            }
-
-            row.style.display = show ? "" : "none";
-        });
-        
-        let empty = rows.every(elem => elem.style.display.toString() == "none");
-        noResultsRow.style.display = empty ? "" : "none";
+    async function applyFilters() {        
+        nameInput.value = activeNameFilter;
+        lastNameInput.value = activeLastNameFilter;
+        form.submit();
     }
 
     roleSelect.addEventListener("change", e => {
@@ -84,8 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const links = document.querySelectorAll(`${groupSelector} a`);
         if (links.length === 0) return;
 
-        links[0].classList.add("active");
-
         links.forEach(link => {
             link.addEventListener("click", (e) => {
                 e.preventDefault();
@@ -95,6 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function tableIsEmpty(){
+        let empty = rows.every(elem => elem.style.display.toString() == "none");
+        noResultsRow.style.display = empty ? "" : "none";
+    }
+
     setupFilter(".name-filter");
     setupFilter(".lastname-filter");
+    tableIsEmpty();
 });

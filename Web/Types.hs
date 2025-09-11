@@ -53,6 +53,7 @@ data UsersController
     | UpdateUserAction { userId :: !(Id User) }
     | DeleteUserAction { userId :: !(Id User) }
     | AddNewUserAction
+    | UsersFilterAction
     deriving (Eq, Show, Data)
 
 instance HasNewSessionUrl User where

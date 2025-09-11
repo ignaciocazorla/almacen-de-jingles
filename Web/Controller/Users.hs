@@ -30,6 +30,9 @@ instance Controller UsersController where
         ensurePermission "List"
         users <- query @User |> fetch
         roles <- query @UserRole |> fetch
+        let roleFilter = "-"
+        let nameFilter = "Todos"
+        let lastNameFilter = "Todos"
         render IndexView { .. }
 
     action ShowUserAction { userId } = do
@@ -115,16 +118,51 @@ instance Controller UsersController where
         setSuccessMessage "Usuario eliminado"
         redirectTo UsersAction
 
+    action UsersFilterAction = do
+        ensurePermission "List"
+        let roleFilter = paramText "role-filter"
+        let nameFilter = paramText "name-filter"
+        let lastNameFilter = paramText "lastname-filter"
+        let namePattern = filterString nameFilter
+        let lastNamePattern = filterString lastNameFilter
+        users <- filterUsers roleFilter namePattern lastNamePattern
+        roles <- query @UserRole |> fetch
+        render IndexView {..}
+
+
 buildUser user = user
     |> fill @'["email", "name", "lastName", "passwordHash", "failedLoginAttempts", "userRoleId"]
 
 validateUserFields passwordConfirmation user = user
-    -- We ensure that the error message doesn't include
+    -- Ensure that the error message doesn't include
     -- the entered password.
     |> validateField #passwordHash (isEqual passwordConfirmation |> withCustomErrorMessage "Las contraseñas no coinciden")
     |> validateField #passwordHash nonEmpty
     |> validateField #email isEmail
-    -- After this validation, since it's operation on the IO, we'll need to use >>=.
     |> validateIsUnique #email
 
 ensurePermission action = ensurePermissions action "Users"
+
+filterString :: Text -> Text
+filterString "Todos" = "%"
+filterString value = "%" <> value <> "%"
+
+filterUsers :: (?modelContext::ModelContext) => Text -> Text -> Text -> IO[User]
+filterUsers "-" name lastName = filterByFullName name lastName
+filterUsers role name lastName = filterByRoleAndFullName role name lastName
+
+filterByFullName :: (?modelContext::ModelContext) => Text -> Text -> IO[User]
+filterByFullName name lastName = do 
+    query @User 
+        |> filterWhereILike (#name, name)
+        |> filterWhereILike (#lastName, lastName)
+        |> fetch
+
+filterByRoleAndFullName :: (?modelContext::ModelContext) => Text -> Text -> Text -> IO[User]
+filterByRoleAndFullName role name lastName = do
+    selectedRole <- query @UserRole |> filterWhere (#name, role) |> fetchOne 
+    query @User 
+        |> filterWhere (#userRoleId, selectedRole.id)
+        |> filterWhereILike (#name, name)
+        |> filterWhereILike (#lastName, lastName)
+        |> fetch

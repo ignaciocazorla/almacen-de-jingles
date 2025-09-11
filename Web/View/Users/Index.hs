@@ -20,7 +20,7 @@ module Web.View.Users.Index where
 import Web.View.Prelude
 import Data.Aeson
 
-data IndexView = IndexView { users :: [User], roles :: [UserRole] }
+data IndexView = IndexView { users :: [User], roles :: [UserRole], roleFilter :: Text, nameFilter:: Text, lastNameFilter :: Text }
 
 instance View IndexView where
     beforeRender view = do
@@ -38,24 +38,31 @@ instance View IndexView where
 
         <div class="filter-menu">
             <h3>Filtros</h3>
-            <ul class="horizontal-menu">
-                <li><b>Rol</b></li>
-                <li>
-                    <select>
-                        <option value="-">-</option>
-                        {forEach roles renderRoles}
-                    </select>
-                </li>
-            </ul> 
+            <form id="users-filter-form" action="/UsersFilter">
+                <ul class="horizontal-menu">
+                    <li><b>Rol</b></li>
+                    <li>
+                        <select name="role-filter">
+                            <option value="-">-</option>
+                            {forEach roles (renderRoles roleFilter)}
+                        </select>
+                    </li>
+                </ul> 
         
-            <ul class="horizontal-menu name-filter">
-                <li><b>Nombre</b></li>
-                {forEach listItems renderListItem}
-            </ul>
-            <ul class="horizontal-menu lastname-filter">
-                <li><b>Apellido</b></li>
-                {forEach listItems renderListItem}
-            </ul>
+                <ul class="horizontal-menu name-filter">
+                    <li><b>Nombre</b></li>
+                    {forEach listItems (renderListItem nameFilter)}
+                </ul>
+                <ul class="horizontal-menu lastname-filter">
+                    <li><b>Apellido</b></li>
+                    {forEach listItems (renderListItem lastNameFilter)}
+                </ul>
+
+                <div id="filter-inputs" style="display:none">
+                    <input value={nameFilter} name="name-filter">
+                    <input value={lastNameFilter} name="lastname-filter">
+                </div>
+            </form>
         </div>
 
         <div class="table-responsive">
@@ -112,18 +119,28 @@ renderUser roles user = [hsx|
     </tr>
 |]
 
-renderListItem :: Text -> Html
-renderListItem char = [hsx|
-    <li><a href="">{char}</a></li>
-|]
+renderListItem :: Text -> Text -> Html
+renderListItem selectedChar char = 
+    if char == selectedChar then
+        [hsx|
+        <li><a href="" name="name" class="active">{char}</a></li>
+    |]
+    else [hsx|
+        <li><a href="" name="name">{char}</a></li>
+    |]
 
 listItems :: [Text]
 listItems = ["Todos","A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
-renderRoles :: UserRole -> Html
-renderRoles role = [hsx|
-    <option value={role.name}>{role.name}</option>
-|]
+renderRoles :: Text -> UserRole -> Html
+renderRoles selectedRole role =
+    if role.name == selectedRole then
+        [hsx|
+        <option value={role.name} selected>{role.name}</option>
+    |]
+    else [hsx|
+        <option value={role.name}>{role.name}</option>
+    |]
 
 renderRoleForUser :: User -> [UserRole] -> Html
 renderRoleForUser user roles =
