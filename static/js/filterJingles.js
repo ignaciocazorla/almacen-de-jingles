@@ -16,11 +16,21 @@ You may read the full license at https://github.com/ignaciocazorla/almacen-de-ji
 @file static/js/filterJingles.js
 */
 
+let noResultsRow = null;
+let rows = null;
+
 document.addEventListener("DOMContentLoaded", () => {
-    const select = document.getElementById("search");
-    const form = document.getElementById("jingles-filter-form");
-    const textInput = form.querySelector('input[name="search"]');
-    const inputContainer = document.getElementById("dateInputs")
+    setupJinglesFilter();
+    tableIsEmpty();
+});
+
+const setupJinglesFilter = () => {
+    let select = document.getElementById("search");
+    let form = document.getElementById("jingles-filter-form");
+    let textInput = form.querySelector('input[name="search"]');
+    let inputContainer = document.getElementById("dateInputs");
+    rows = Array.from(document.querySelectorAll("tbody tr:not(#no-results)"));
+    noResultsRow = document.getElementById("no-results");
 
     select.addEventListener("change", () => {
         if (select.value === "fecha") {
@@ -39,4 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
             form.setAttribute("action", "/SearchByField");
         }
     });
-});
+}
+
+const tableIsEmpty = () => {
+    let empty = rows.every(elem => elem.style.display.toString() == "none");
+    noResultsRow.style.display = empty ? "" : "none";
+}

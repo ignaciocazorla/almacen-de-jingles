@@ -64,7 +64,18 @@ instance View IndexView where
                         <th>Tema Original</th>
                     </tr>
                 </thead>
-                <tbody>{forEach jingles (renderJingle permissions) }</tbody>
+                <tbody>
+                    { forEach jingles (renderJingle permissions) }
+                    <tr id="no-results" style="display:none;">
+                        <td colspan="6" class="text-center text-muted">No hay jingles para mostrar</td>
+                        <td style="display:none;"></td>
+                        <td style="display:none;"></td>
+                        <td style="display:none;"></td>
+                        <td style="display:none;"></td>
+                        <td style="display:none;"></td>
+                        <td style="display:none;"></td>
+                    </tr>
+                </tbody>
             </table>
             
         </div>

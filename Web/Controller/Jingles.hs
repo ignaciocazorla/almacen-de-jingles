@@ -141,16 +141,26 @@ filterJinglesBy "temaOriginal" searchPattern = filterByOriginalTheme searchPatte
 filterJinglesBy _ _ = pure []
 
 filterByName :: (?modelContext :: ModelContext) => Text -> IO[Jingle]
-filterByName searchPattern = sqlQuery "SELECT * FROM jingles WHERE nombre ILIKE ?" (Only searchPattern)
+filterByName searchPattern = query @Jingle
+                            |> filterWhereILike (#nombre, searchPattern)
+                            |> fetch
 
 filterByVideoName :: (?modelContext :: ModelContext) => Text -> IO[Jingle]
-filterByVideoName searchPattern = sqlQuery "SELECT * FROM jingles WHERE nombre_video ILIKE ?" (Only searchPattern)
-
+filterByVideoName searchPattern = query @Jingle
+                            |> filterWhereILike (#nombreVideo, searchPattern)
+                            |> fetch
+                            
 filterByOriginalBand :: (?modelContext :: ModelContext) => Text -> IO[Jingle]
-filterByOriginalBand searchPattern = sqlQuery "SELECT * FROM jingles WHERE banda_original ILIKE ?" (Only searchPattern)
+filterByOriginalBand searchPattern = query @Jingle
+                            |> filterWhereILike (#bandaOriginal, searchPattern)
+                            |> fetch
 
 filterByAuthor :: (?modelContext :: ModelContext) => Text -> IO[Jingle]
-filterByAuthor searchPattern = sqlQuery "SELECT * FROM jingles WHERE autor ILIKE ?" (Only searchPattern)
+filterByAuthor searchPattern = query @Jingle
+                            |> filterWhereILike (#autor, searchPattern)
+                            |> fetch
 
 filterByOriginalTheme :: (?modelContext :: ModelContext) => Text -> IO[Jingle]
-filterByOriginalTheme searchPattern = sqlQuery "SELECT * FROM jingles WHERE tema_original ILIKE ?" (Only searchPattern)
+filterByOriginalTheme searchPattern = query @Jingle
+                            |> filterWhereILike (#temaOriginal, searchPattern)
+                            |> fetch

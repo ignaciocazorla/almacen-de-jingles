@@ -6,10 +6,10 @@ CREATE TABLE jingles (
     link TEXT NOT NULL,
     tiempo_inicio TEXT DEFAULT NULL,
     nombre_video TEXT NOT NULL,
-    banda_original TEXT DEFAULT NULL,
-    autor TEXT DEFAULT NULL,
+    banda_original TEXT DEFAULT '' NOT NULL,
+    autor TEXT DEFAULT '' NOT NULL,
     user_id UUID NOT NULL,
-    tema_original TEXT DEFAULT NULL,
+    tema_original TEXT DEFAULT '' NOT NULL,
     comentario TEXT DEFAULT NULL
 );
 CREATE TABLE users (
