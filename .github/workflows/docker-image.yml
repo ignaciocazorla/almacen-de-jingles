@@ -57,5 +57,5 @@ jobs:
 
     - name: Tag and push docker image
       run: |
-        docker tag $(docker images -q | head -n 1) ${{ env.REGISTRY }}/${{ IMAGE_NAME }}:${{ github.ref_name }}
-        docker push ${{ env.REGISTRY }}/${{ IMAGE_NAME }}:${{ github.ref_name }}
+        docker tag $(docker images -q | head -n 1) ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+        docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
