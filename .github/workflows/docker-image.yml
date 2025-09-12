@@ -1,0 +1,61 @@
+name: Deploy
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  NIXPKGS: "https://github.com/NixOS/nixpkgs/archive/51bcdc4cdaac48535dabf0ad4642a66774c609ed.tar.gz"
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push-docker-image:
+    name: Build and push Docker image
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - uses: cachix/install-nix-action@v20
+      with:
+        nix_path: nixpkgs=${{ env.NIXPKGS }}
+
+    - name: Cachix Init
+      uses: cachix/cachix-action@v12
+      with:
+        name: digitallyinduced
+        skipPush: true
+
+    - uses: HatsuneMiku3939/direnv-action@v1
+      with:
+        direnvVersion: 2.32.3
+
+    - name: Create docker image
+      run: |
+          nix build .#unoptimized-docker-image \
+          --option sandbox false \
+          --extra-experimental-features nix-command \
+          --extra-experimental-features flakes
+
+    - name: Log in to GitHub Container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Load Docker image
+      run: |
+        cat result | docker load
+
+    - name: Tag and push docker image
+      run: |
+        docker tag $(docker images -q | head -n 1) ${{ env.REGISTRY }}/${{ IMAGE_NAME }}:${{ github.ref_name }}
+        docker push ${{ env.REGISTRY }}/${{ IMAGE_NAME }}:${{ github.ref_name }}
