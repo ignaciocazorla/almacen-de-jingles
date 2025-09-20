@@ -1,4 +1,8 @@
 -- Your database schema. Use the Schema Designer at http://localhost:8001/ to add some tables.
+
+-- Enable uuid-ossp extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE jingles (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
     nombre TEXT NOT NULL,

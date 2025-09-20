@@ -1,4 +1,5 @@
-#!/usr/bin/env run-script
+#!/bin/bash
+{- #!/usr/bin/env run-script -}
 {-
 *****************************************************************************
 Copyright (C) 2025 Ignacio Cazorla, Pablo E. --Fidel-- Martínez López
@@ -22,6 +23,11 @@ module Application.Script.InitializeApp where
 import Application.Script.Prelude
 import Config
 
+import IHP.EnvVar
+
+
+newtype AdminEmail = AdminEmail Text
+newtype AdminPass = AdminPass Text
 
 createPermission roleId resource action = 
     newRecord @UserPermission 
@@ -32,6 +38,9 @@ createPermission roleId resource action =
 
 run :: Script
 run = do
+    adminEmail <- AdminEmail <$> env @Text "ADMIN_USER_EMAIL"
+    adminPass <- AdminPass <$> env @Text "ADMIN_USER_PASS"
+
     -- Roles
     adminRole <- newRecord @UserRole
                 |> set #name "Admin"
@@ -66,10 +75,10 @@ run = do
 
     -- ChiefEditor permissions
     -- Jingles resource
-    createPermission editorRole.id "Jingles" "Edit"
-    createPermission editorRole.id "Jingles" "Delete"
-    createPermission editorRole.id "Jingles" "List"
-    createPermission editorRole.id "Jingles" "Read"
+    createPermission chiefReaderRole.id "Jingles" "Edit"
+    createPermission chiefReaderRole.id "Jingles" "Delete"
+    createPermission chiefReaderRole.id "Jingles" "List"
+    createPermission chiefReaderRole.id "Jingles" "Read"
 
     -- Editor permissions
     -- Jingles resource
@@ -81,8 +90,8 @@ run = do
     -- Jingles resource
     createPermission readerRole.id "Jingles" "Read"
 
-    let (AdminEmail email) = getAppConfig @Config.AdminEmail
-    let (AdminPass pass) = getAppConfig @Config.AdminPass
+    let (AdminEmail email) = adminEmail
+    let (AdminPass pass) = adminPass
 
     -- Check whether admin user exists
     maybeAdmin <- query @User
